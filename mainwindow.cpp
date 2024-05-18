@@ -355,17 +355,20 @@ void MainWindow::on_actionopen_triggered()
         in >> temp;
         while(temp != ' ' && temp  != '-')
         {
-            std::cout << "a";
             switch(temp)
             {
                 case 'K':
                     st_g.white_kingside_castle_right = true;
+                    break;
                 case 'Q':
                     st_g.white_queenside_castle_right = true;
+                    break;
                 case 'k':
                     st_g.black_kingside_castle_right = true;
+                    break;
                 case 'q':
                     st_g.black_queenside_castle_right = true;
+                    break;
             }
             in >> temp;
         }
@@ -378,6 +381,7 @@ void MainWindow::on_actionopen_triggered()
            in >> temp;
            st_g.en_passant.second = (int)(temp - 48);
         }
+        
         
         for(int r = 0; r < 8; r++)
         {

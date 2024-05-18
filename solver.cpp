@@ -95,11 +95,24 @@ void Solver::get_moves(state &st, std::vector<std::vector<int>> &moves, const in
     switch(st.b[r0][c0])
     {
         case 6:
+            for(int i = 0, r = r0 - 1; r < 8 && i < 3; r++, i++)
+                    for(int j = 0, c = c0 - 1; c < 8 && j < 3; c++, j++)
+                        if(legal_move(st, r0, c0, r, c))
+                            moves.push_back({r0, c0, r, c});
+            if(st.white_kingside_castle_right && r0 == 7 && c0 == 4 && legal_move(st, r0, c0, 7, 6))
+                moves.push_back({r0, c0, 7, 6});
+            else if(st.white_queenside_castle_right && r0 == 7 && c0 == 4 && legal_move(st, r0, c0, 7, 2))
+                moves.push_back({r0, c0, 7, 2});
+            break;
         case -6:
             for(int i = 0, r = r0 - 1; r < 8 && i < 3; r++, i++)
                 for(int j = 0, c = c0 - 1; c < 8 && j < 3; c++, j++)
                     if(legal_move(st, r0, c0, r, c))
                         moves.push_back({r0, c0, r, c});
+            if(st.black_kingside_castle_right && r0 == 0 && c0 == 4 && legal_move(st, r0, c0, 0, 6))
+                moves.push_back({r0, c0, 0, 6});
+            else if(st.black_queenside_castle_right && r0 == 0 && c0 == 4 && legal_move(st, r0, c0, 0, 2))
+                moves.push_back({r0, c0, 0, 2});
             break;
 
         case 5:
