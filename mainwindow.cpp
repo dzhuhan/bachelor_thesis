@@ -499,6 +499,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     count = 0;
+    ans = false;
     ans_moves.clear();
     ui->textEdit->clear();
     std::stringstream ss;
