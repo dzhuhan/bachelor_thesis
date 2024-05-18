@@ -14,7 +14,6 @@ extern int black_pieces_value;
 extern int value_diff;
 extern int advantage;
 
-extern int b_copy[8][8];
 extern const int init[8][8];
 
 extern std::vector <std::vector<int>> ans_moves;
@@ -22,7 +21,13 @@ extern std::vector <std::vector<int>> ans_moves;
 extern struct state
 {
     int b[8][8];
+    
+    bool white_kingside_castle_right;
+    bool white_queenside_castle_right;
+    bool black_kingside_castle_right;
+    bool black_queenside_castle_right;
     std::pair<int, int> en_passant;
+    
     std::pair<int, int> white_king_pos;
     std::pair<int, int> black_king_pos;
     std::vector <std::pair<int, int>> white_pieces;

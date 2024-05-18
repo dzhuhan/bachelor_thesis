@@ -20,17 +20,51 @@ void Solver::update_state(state &st, const int r0, const int c0, const int r, co
     }
     st.b[r][c] = st.b[r0][c0];
     st.b[r0][c0] = 0;
-    if(st.b[r][c] == 6)
-        st.white_king_pos = std::make_pair(r, c);
-    if(st.b[r][c] == -6)
-        st.black_king_pos = std::make_pair(r, c);
-        
-    if((st.b[r][c] == 1 || st.b[r][c] == -1) && st.en_passant == std::make_pair(r, c))
-    {
-        // std::cout << "AAAAAAAAAAAAAAAAAAA!!!!!\n";
-        st.b[r0][c] = 0;
-    }
     
+    
+    if(st.b[r][c] == 6)
+    {
+        st.white_king_pos = std::make_pair(r, c);
+        st.white_kingside_castle_right = false;
+        st.white_queenside_castle_right = false;
+        if(r0 == 7 && c0 == 4 && r == 7 && c == 6)
+        {
+            st.b[7][5] = 4;
+            st.b[7][7] = 0;
+        }
+        else if(r0 == 7 && c0 == 4 && r == 7 && c == 2)
+        {
+            st.b[7][3] = 4;
+            st.b[7][0] = 0;
+        }
+    }
+    else if(st.b[r][c] == -6)
+    {
+        st.black_king_pos = std::make_pair(r, c);
+        st.black_kingside_castle_right = false;
+        st.black_queenside_castle_right = false;
+        if(r0 == 0 && c0 == 4 && r == 0 && c == 6)
+        {
+            st.b[0][5] = -4;
+            st.b[0][7] = 0;
+        }
+        else if(r0 == 0 && c0 == 4 && r == 0 && c == 2)
+        {
+            st.b[0][3] = -4;
+            st.b[0][0] = 0;
+        }
+    }
+    else if(st.b[r][c] == 4 && r0 == 7 && c0 == 7)
+        st.white_kingside_castle_right = false;
+    else if(st.b[r][c] == 4 && r0 == 7 && c0 == 0)
+        st.white_queenside_castle_right = false;
+    else if(st.b[r][c] == -4 && r0 == 0 && c0 == 7)
+        st.black_kingside_castle_right = false;
+    else if(st.b[r][c] == -4 && r0 == 0 && c0 == 0)
+        st.black_queenside_castle_right = false;
+    
+    if((st.b[r][c] == 1 || st.b[r][c] == -1) && st.en_passant == std::make_pair(r, c))
+        st.b[r0][c] = 0; 
     if(st.b[r][c] == 1 && r == (r0 - 2) && c == c0)
         st.en_passant = std::make_pair(r0 - 1, c0);
     else if (st.b[r][c] == -1 && r == (r0 + 2) && c == c0)
@@ -216,8 +250,9 @@ bool Solver::legal_move(state &st, const int r0, const int c0, const int r, cons
         if(st.b[r][c] == -6)
             st.black_king_pos = std::make_pair(r, c);
 
-        if((st.b[r][c] > 0 && piece_is_safe(st, st.white_king_pos.first, st.white_king_pos.second)) ||
-           (st.b[r][c] < 0 && piece_is_safe(st, st.black_king_pos.first, st.black_king_pos.second)))
+
+        if((st.b[r][c] > 0 && square_is_safe(st, true, st.white_king_pos.first, st.white_king_pos.second)) ||
+           (st.b[r][c] < 0 && square_is_safe(st, false, st.black_king_pos.first, st.black_king_pos.second)))
         {
             st.b[r0][c0] = st.b[r][c];
             st.b[r][c] = temp;
@@ -253,8 +288,18 @@ bool Solver::possible_move(state &st, const int r0, const int c0, const int r, c
         switch(st.b[r0][c0])
         {
             case 6:
+                return ((r == r0 + 1 || r == r0 - 1  || r == r0) && (c == c0 + 1 || c == c0 - 1 || c == c0))
+                    || ((r0 == 7 && r == 7) && (c0 == 4 && c == 6) && st.white_kingside_castle_right
+                    && st.b[7][5] == 0 && square_is_safe(st, true, 7, 4) && square_is_safe(st, true, 7, 5))
+                    || ((r0 == 7 && r == 7) && (c0 == 4 && c == 2) && st.white_queenside_castle_right
+                    && st.b[7][1] == 0 && st.b[7][3] == 0 && square_is_safe(st, true, 7, 4) && square_is_safe(st, true, 7, 3));
+                break;
             case -6:
-                return ((r == r0 + 1 || r == r0 - 1  || r == r0) && (c == c0 + 1 || c == c0 - 1 || c == c0));
+                return ((r == r0 + 1 || r == r0 - 1  || r == r0) && (c == c0 + 1 || c == c0 - 1 || c == c0))
+                    || ((r0 == 0 && r == 0) && (c0 == 4 && c == 6) && st.black_kingside_castle_right
+                    && st.b[0][5] == 0 && square_is_safe(st, false, 0, 4) && square_is_safe(st, false, 0, 5))
+                    || ((r0 == 0 && r == 0) && (c0 == 4 && c == 2) && st.black_queenside_castle_right
+                    && st.b[0][1] == 0 && st.b[0][3] == 0 && square_is_safe(st, false, 0, 4) && square_is_safe(st, false, 0, 3));
                 break;
 
             case 5:
@@ -414,13 +459,13 @@ bool Solver::possible_move(state &st, const int r0, const int c0, const int r, c
         return false;
 }
 
-bool Solver::piece_is_safe(state &st, const int r0, const int c0)
+bool Solver::square_is_safe(state &st, bool s, const int r0, const int c0)
 {
     int m;
     int r;
     int c;
 
-    m = st.b[r0][c0] > 0 ? -1 : 1;
+    m = s ? -1 : 1;
 
     for(int i = 0, r = r0 - 1; r < 8 && i < 3; r++, i++)
         for(int j = 0, c = c0 - 1; c < 8 && j < 3; c++, j++)
@@ -552,7 +597,7 @@ void Solver::sort_by_check(bool s, state st, std::vector<std::vector<int>> &m)
         temp = st;
         // std::cout << m[i][0] << m[i][1] << m[i][2] << m[i][3] << std::endl;
         update_state(temp, m[i][0], m[i][1], m[i][2], m[i][3]);
-        if(!piece_is_safe(temp, king_pos->first, king_pos->second))
+        if(!square_is_safe(temp, !s, king_pos->first, king_pos->second))
         {
             temp_m = m[count];
             m[count] = m[i];
@@ -652,7 +697,7 @@ void Solver::find_mate_in(state st, int m, bool s)
                 return;
             }
             if(m == 1 && next.black_moves.empty()
-                && !piece_is_safe(next, next.black_king_pos.first, next.black_king_pos.second))
+                && !square_is_safe(next, false, next.black_king_pos.first, next.black_king_pos.second))
             {
                 ans = true;
                 count++;
@@ -787,7 +832,7 @@ void Solver::find_mate_in(state st, int m, bool s)
                 return;
             }
             if(m == 1 && next.white_moves.empty() &&
-                !piece_is_safe(next, next.white_king_pos.first, next.white_king_pos.second))
+                !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
             {
                 ans = true;
                 count++;
@@ -827,7 +872,7 @@ void Solver::helpmate(state st, int m, bool s)
                 return;
             }
             if(m == 1 && next.black_moves.empty()
-                && !piece_is_safe(next, next.black_king_pos.first, next.black_king_pos.second))
+                && !square_is_safe(next, false, next.black_king_pos.first, next.black_king_pos.second))
             {
                 ans = true;
                 count++;
@@ -858,7 +903,7 @@ void Solver::helpmate(state st, int m, bool s)
                 return;
             }
             if(m == 1 && next.white_moves.empty() &&
-                !piece_is_safe(next, next.white_king_pos.first, next.white_king_pos.second))
+                !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
             {
                 ans = true;
                 count++;

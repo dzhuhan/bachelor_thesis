@@ -88,6 +88,10 @@ void MainWindow::init_board()
     processBoard = board;
     ui->label->setPixmap(QPixmap::fromImage(board));
 
+    st_g.white_kingside_castle_right = true;
+    st_g.white_queenside_castle_right = true;
+    st_g.black_kingside_castle_right = true;
+    st_g.black_queenside_castle_right = true;
     for(int r = 0; r < 8; r++)
     {
         for(int c = 0; c < 8; c++)
@@ -199,6 +203,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             (st_g.b[row][col] < 0 && st_g.b[r][c] >= 0)) &&
             (edit || (Solver::legal_move(st_g, row, col, r, c) && is_turn(row, col))))
         {
+            // std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
             Solver::update_state(st_g, row, col, r, c);
             if(!edit)
                 Solver::promotion(st_g, r, c);
@@ -243,6 +248,11 @@ void MainWindow::on_actionopen_triggered()
 
     if(in.readLine().contains("/"))
     {
+        st_g.white_kingside_castle_right = false;
+        st_g.white_queenside_castle_right = false;
+        st_g.black_kingside_castle_right = false;
+        st_g.black_queenside_castle_right = false;
+        
         in.seek(0);
         char temp;
         for(int r = 0; r < 8; r++)
@@ -330,10 +340,45 @@ void MainWindow::on_actionopen_triggered()
             std::cout << '\n';
         }
 
-        for(int r = 0; r < 8; r++)
-            for(int c = 0; c < 8; c++)
-                b_copy[r][c] = st_g.b[r][c];
-
+        in >> temp;
+        if(temp == 'w')
+        {
+            ui->comboBox_2->setCurrentIndex(0);
+            side = true;
+        }
+        else
+        {
+            ui->comboBox_2->setCurrentIndex(1);
+            side = false;
+        }        
+        in >> temp;
+        in >> temp;
+        while(temp != ' ' && temp  != '-')
+        {
+            std::cout << "a";
+            switch(temp)
+            {
+                case 'K':
+                    st_g.white_kingside_castle_right = true;
+                case 'Q':
+                    st_g.white_queenside_castle_right = true;
+                case 'k':
+                    st_g.black_kingside_castle_right = true;
+                case 'q':
+                    st_g.black_queenside_castle_right = true;
+            }
+            in >> temp;
+        }
+        
+        in >> temp;
+        in >> temp;
+        if(temp  != '-')
+        {
+           st_g.en_passant.first = (int)(temp - 97);
+           in >> temp;
+           st_g.en_passant.second = (int)(temp - 48);
+        }
+        
         for(int r = 0; r < 8; r++)
         {
             for(int c = 0; c < 8; c++)
@@ -367,10 +412,6 @@ void MainWindow::on_actionopen_triggered()
                 }
             }
         }
-
-        for(int r = 0; r < 8; r++)
-            for(int c = 0; c < 8; c++)
-                b_copy[r][c] = st_g.b[r][c];
 
         for(int r = 0; r < 8; r++)
         {

@@ -15,7 +15,7 @@ public:
 
     static bool legal_move(state &st, const int r0, const int c0, const int c, const int r);
     static bool possible_move(state &st, const int r0, const int c0, const int r, const int c);
-    static bool piece_is_safe(state &st, const int r0, const int c0);
+    static bool square_is_safe(state &st, bool s, const int r0, const int c0);
     static void promotion(state &st, const int r0, const int c0);
     static int get_value(int v);
 
