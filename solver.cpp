@@ -775,7 +775,7 @@ void Solver::find_mate_in(state st, int m, bool s)
                     std::cout << "MOVES: " << size << "\n";
                     for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
                     {
-                        std::cout << "move: " << ans_moves[0] << "\n";
+                        std::cout << "move: " << ans_moves[i] << "\n";
                     }
                     for(std::vector<std::vector<int>>::size_type i = 2; i < size; i += 2)
                     {
@@ -874,6 +874,7 @@ void Solver::find_mate_in(state st, int m, bool s)
         if(s_sort)
         {
             sort_by_check(false, st, st.black_moves);
+            //print_state(st);
         }
         for(auto e: st.black_moves)
         {
@@ -885,11 +886,109 @@ void Solver::find_mate_in(state st, int m, bool s)
             {
                 return;
             }
-            if(m == 1 && next.white_moves.empty() &&
-                !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
+            if(m == 1 && next.white_moves.empty()
+                && !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
             {
                 ans = true;
                 count++;
+                
+                std::vector<int> a;
+                state st_g_copy = st_g;
+                state temp = st_g;
+                state temp0;
+                
+                // verify_mate...
+                if(ans_moves.size() > 1)
+                {
+                    // if(!legal_move(temp, ans_moves[0][0], ans_moves[0][1], ans_moves[0][2], ans_moves[0][3]))
+                    // {
+                    //     std::cout << "\n\nUNACCEPTABLEEEEEEE!!!!!\n\n";
+                    // }
+                    update_state(temp, ans_moves[0]);
+                    std::vector<std::vector<int>>::size_type size = ans_moves.size();
+                    std::cout << "MOVES: " << size << "\n";
+                    for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
+                    {
+                        std::cout << "move: " << ans_moves[0] << "\n";
+                    }
+                    for(std::vector<std::vector<int>>::size_type i = 2; i < size; i += 2)
+                    {
+                        for(const auto &e: temp.white_moves)
+                        {
+                            std::cout << std::endl << "IN_WHITE_MOVES" << std::endl;
+                            temp0 = temp;
+                            update_state(temp0, e);
+                            // if(!legal_move(temp0, ans_moves[i][0], ans_moves[i][1], ans_moves[i][2], ans_moves[i][3]))
+                            // {
+                            //     ans = false;
+                            //     break;
+                            // }
+                            // ans = false;
+                            for(std::vector<std::vector<int>>::size_type k = 1; k <= size - i; k += 2)
+                            {
+                                ans = false;
+                                a = ans_moves;
+                                st_g = temp0;
+                                
+                                if(e != ans_moves[i-1])
+                                {
+                                    std::cout << "\nE_NOT_IN_ANS_MOVES\n";
+                                    ans_moves.clear();
+                                    find_mate_in(temp0, k, false);
+                                    std::cout << "size - i: " << size - i << "\n";
+                                    std::cout << "ans: " << ans << "\n";
+                                    std::cout << "i: " << i << "\n";
+                                    std::cout << "k: " << k << "\n";
+                                    if(ans)
+                                    {
+                                        std::cout << "\nmate_when_SHOULD_be\n";
+                                        ans_moves = a;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        ans_moves = a;
+                                        continue;
+                                    }
+                                }
+                                else if((k < size - i) && (size - i > 1))
+                                {
+                                    std::cout << "\nE_IN_ANS_MOVES\n";
+                                    ans_moves.clear();
+                                    find_mate_in(temp0, k, false);
+                                    std::cout << "size - i: " << size - i << "\n";
+                                    std::cout << "ans: " << ans << "\n";
+                                    std::cout << "i: " << i << "\n";
+                                    std::cout << "k: " << k << "\n";
+                                    if(ans)
+                                    {
+                                        std::cout << "\nmate_when_SHOULD_NOT_be\n";
+                                        ans = false;
+                                        ans_moves = a;
+                                        break;
+                                    }
+                                }
+                                ans = true;
+                                ans_moves = a;
+                            }
+                            if(!ans)
+                                break;
+                        }
+                        if(!ans)
+                        {
+                            st_g = st_g_copy;
+                            break;
+                        }
+                        std::cout << "\nSTATE_UPDATED_IF_OK\n";
+                        for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
+                        {
+                            std::cout << "move: " << ans_moves[i] << " :" << i << "\n";
+                        }
+                        update_state(temp, ans_moves[i - 1]);
+                        update_state(temp, ans_moves[i]);
+                    }
+                }
+
                 if(ans)
                 {
                     st_g = next;
