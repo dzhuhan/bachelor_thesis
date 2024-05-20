@@ -29,11 +29,15 @@ void Solver::update_state(state &st, const int r0, const int c0, const int r, co
         st.white_queenside_castle_right = false;
         if(r0 == 7 && c0 == 4 && r == 7 && c == 6)
         {
+            st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(7, 7)));
+            st.white_pieces.push_back(std::make_pair(7, 5));
             st.b[7][5] = 4;
             st.b[7][7] = 0;
         }
         else if(r0 == 7 && c0 == 4 && r == 7 && c == 2)
         {
+            st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(7, 0)));
+            st.white_pieces.push_back(std::make_pair(7, 3));
             st.b[7][3] = 4;
             st.b[7][0] = 0;
         }
@@ -45,11 +49,15 @@ void Solver::update_state(state &st, const int r0, const int c0, const int r, co
         st.black_queenside_castle_right = false;
         if(r0 == 0 && c0 == 4 && r == 0 && c == 6)
         {
+            st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(0, 7)));
+            st.black_pieces.push_back(std::make_pair(0, 5));
             st.b[0][5] = -4;
             st.b[0][7] = 0;
         }
         else if(r0 == 0 && c0 == 4 && r == 0 && c == 2)
         {
+            st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(0, 0)));
+            st.black_pieces.push_back(std::make_pair(0, 3));
             st.b[0][3] = -4;
             st.b[0][0] = 0;
         }
@@ -63,15 +71,35 @@ void Solver::update_state(state &st, const int r0, const int c0, const int r, co
     else if(st.b[r][c] == -4 && r0 == 0 && c0 == 0)
         st.black_queenside_castle_right = false;
     
-    if((st.b[r][c] == 1 || st.b[r][c] == -1) && st.en_passant == std::make_pair(r, c))
-        st.b[r0][c] = 0; 
-    if(st.b[r][c] == 1 && r == (r0 - 2) && c == c0)
-        st.en_passant = std::make_pair(r0 - 1, c0);
-    else if (st.b[r][c] == -1 && r == (r0 + 2) && c == c0)
-        st.en_passant = std::make_pair(r0 + 1, c0);
+    if(st.b[r][c] == 1)
+    {
+        if(st.en_passant == std::make_pair(r, c))
+        {
+            st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(r0, c)));
+            st.b[r0][c] = 0;
+        }
+        else if(r == (r0 - 2) && c == c0)
+            st.en_passant = std::make_pair(r0 - 1, c0);
+        else
+            st.en_passant = std::make_pair(-1, -1);
+        promotion(st, r, c);
+    }
+    else if(st.b[r][c] == -1)
+    {
+        if(st.en_passant == std::make_pair(r, c))
+        {
+            st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(r0, c)));
+            st.b[r0][c] = 0;
+        }
+        else if(r == (r0 + 2) && c == c0)
+            st.en_passant = std::make_pair(r0 + 1, c0);
+        else
+            st.en_passant = std::make_pair(-1, -1);
+        promotion(st, r, c);
+    }
     else
         st.en_passant = std::make_pair(-1, -1);
-
+    
 
     st.white_moves.clear();
     st.black_moves.clear();

@@ -205,8 +205,6 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         {
             // std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
             Solver::update_state(st_g, row, col, r, c);
-            if(!edit)
-                Solver::promotion(st_g, r, c);
             set_board();
             select = false;
         }
@@ -374,12 +372,11 @@ void MainWindow::on_actionopen_triggered()
         }
         
         in >> temp;
-        in >> temp;
         if(temp  != '-')
         {
-           st_g.en_passant.first = (int)(temp - 97);
-           in >> temp;
-           st_g.en_passant.second = (int)(temp - 48);
+            st_g.en_passant.first = (int)(temp - 97);
+            in >> temp;
+            st_g.en_passant.second = (int)(temp - 48);
         }
         
         
