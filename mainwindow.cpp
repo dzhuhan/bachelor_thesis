@@ -201,12 +201,14 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     {
         if(st_g.b[row][col] != 0 && ((st_g.b[row][col] > 0 && st_g.b[r][c] <= 0) ||
             (st_g.b[row][col] < 0 && st_g.b[r][c] >= 0)) &&
-            (edit || (Solver::legal_move(st_g, row, col, r, c) && is_turn(row, col))))
+            (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c) && is_turn(row, col))))
         {
-            // std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
-            Solver::update_state(st_g, row, col, r, c);
+            std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
+            Solver::update_state(st_g, row * 1000 + col * 100 + r * 10 + c);
             set_board();
             select = false;
+            std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
+
         }
         else
         {
@@ -580,12 +582,12 @@ void MainWindow::on_pushButton_2_clicked()
 
     set_board();
 
-    for (auto e = ans_moves.begin(); e != ans_moves.end(); e++)
+    for (auto e: ans_moves)
     {
-        ss << (char)(e->at(1) + 97);
-        ss << 8 - e->at(0);
-        ss << (char)(e->at(3) + 97);
-        ss << 8- e->at(2);
+        ss << (char)(e / 100 % 10 + 97);
+        ss << 8 - e / 1000 % 10;
+        ss << (char)(e % 10 + 97);
+        ss << 8- e / 10 % 10;
         ss << '\n';
     }
     ui->textEdit->setText(QString::fromStdString(ss.str()));

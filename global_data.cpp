@@ -10,7 +10,7 @@ int advantage;
 long count;
 
 bool ans;
-std::vector <std::vector<int>> ans_moves;
+std::vector <int> ans_moves;
 
 int init[8][8] =
     {{-4,-2,-3,-5,-6,-3,-2,-4},
@@ -44,6 +44,6 @@ struct state
     std::pair<int, int> black_king_pos;
     std::vector <std::pair<int, int>> white_pieces;
     std::vector <std::pair<int, int>> black_pieces;
-    std::vector <std::vector<int>> white_moves;
-    std::vector <std::vector<int>> black_moves;
+    std::vector <int> white_moves;
+    std::vector <int> black_moves;
 } st_g;

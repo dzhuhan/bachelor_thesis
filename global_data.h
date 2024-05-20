@@ -16,7 +16,7 @@ extern int advantage;
 
 extern const int init[8][8];
 
-extern std::vector <std::vector<int>> ans_moves;
+extern std::vector<int> ans_moves;
 
 extern struct state
 {
@@ -32,8 +32,8 @@ extern struct state
     std::pair<int, int> black_king_pos;
     std::vector <std::pair<int, int>> white_pieces;
     std::vector <std::pair<int, int>> black_pieces;
-    std::vector <std::vector<int>> white_moves;
-    std::vector <std::vector<int>> black_moves;
+    std::vector <int> white_moves;
+    std::vector <int> black_moves;
 } st_g;
 
 #endif // GLOBAL_DATA_H

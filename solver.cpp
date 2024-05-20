@@ -2,8 +2,13 @@
 #include <algorithm>
 #include <vector>
 
-void Solver::update_state(state &st, const int r0, const int c0, const int r, const int c)
+void Solver::update_state(state &st, const int move)
 {
+    const int r0 = move / 1000 % 10;
+    const int c0 = move / 100 % 10;
+    const int r = move / 10 % 10;
+    const int c = move % 10;
+    
     if(st.b[r0][c0] > 0)
     {
         st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(r0, c0)));
@@ -115,7 +120,7 @@ void Solver::update_state(state &st, const int r0, const int c0, const int r, co
     }
 }
 
-void Solver::get_moves(state &st, std::vector<std::vector<int>> &moves, const int r0, const int c0)
+void Solver::get_moves(state &st, std::vector<int> &moves, const int r0, const int c0)
 {
     int r;
     int c;
@@ -124,165 +129,170 @@ void Solver::get_moves(state &st, std::vector<std::vector<int>> &moves, const in
     {
         case 6:
             for(int i = 0, r = r0 - 1; r < 8 && i < 3; r++, i++)
-                    for(int j = 0, c = c0 - 1; c < 8 && j < 3; c++, j++)
-                        if(legal_move(st, r0, c0, r, c))
-                            moves.push_back({r0, c0, r, c});
-            if(st.white_kingside_castle_right && r0 == 7 && c0 == 4 && legal_move(st, r0, c0, 7, 6))
-                moves.push_back({r0, c0, 7, 6});
-            else if(st.white_queenside_castle_right && r0 == 7 && c0 == 4 && legal_move(st, r0, c0, 7, 2))
-                moves.push_back({r0, c0, 7, 2});
+                for(int j = 0, c = c0 - 1; c < 8 && j < 3; c++, j++)
+                    if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                        moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+            if(st.white_kingside_castle_right && r0 == 7 && c0 == 4 && legal_move(st, 7476))
+                moves.push_back(7476);
+            else if(st.white_queenside_castle_right && r0 == 7 && c0 == 4 && legal_move(st, 7472))
+                moves.push_back(7472);
             break;
         case -6:
             for(int i = 0, r = r0 - 1; r < 8 && i < 3; r++, i++)
                 for(int j = 0, c = c0 - 1; c < 8 && j < 3; c++, j++)
-                    if(legal_move(st, r0, c0, r, c))
-                        moves.push_back({r0, c0, r, c});
-            if(st.black_kingside_castle_right && r0 == 0 && c0 == 4 && legal_move(st, r0, c0, 0, 6))
-                moves.push_back({r0, c0, 0, 6});
-            else if(st.black_queenside_castle_right && r0 == 0 && c0 == 4 && legal_move(st, r0, c0, 0, 2))
-                moves.push_back({r0, c0, 0, 2});
+                    if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                        moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+            if(st.black_kingside_castle_right && r0 == 0 && c0 == 4 && legal_move(st, 406))
+                moves.push_back(406);
+            else if(st.black_queenside_castle_right && r0 == 0 && c0 == 4 && legal_move(st, 402))
+                moves.push_back(402);
             break;
 
         case 5:
         case -5:
             for(r = r0 + 1, c = c0 + 1; r < 8 && c < 8; r++, c++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 + 1, c = c0 - 1; r < 8 && c >= 0; r++, c--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 - 1, c = c0 + 1; r >= 0 && c < 8; r--, c++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 - 1, c = c0 - 1; r >= 0 && c >= 0; r--, c--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 + 1, c = c0; r < 8; r++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 - 1, c = c0; r >= 0; r--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(c = c0 + 1, r = r0; c < 8; c++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(c = c0 - 1, r = r0; c >= 0; c--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             break;
 
         case 4:
         case -4:
             for(r = r0 + 1, c = c0; r < 8; r++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 - 1, c = c0; r >= 0; r--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(c = c0 + 1, r = r0; c < 8; c++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(c = c0 - 1, r = r0; c >= 0; c--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             break;
 
         case 3:
         case -3:
             for(r = r0 + 1, c = c0 + 1; r < 8 && c < 8; r++, c++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 + 1, c = c0 - 1; r < 8 && c >= 0; r++, c--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 - 1, c = c0 + 1; r >= 0 && c < 8; r--, c++)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             for(r = r0 - 1, c = c0 - 1; r >= 0 && c >= 0; r--, c--)
-                if(legal_move(st, r0, c0, r, c))
-                    moves.push_back({r0, c0, r, c});
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             break;
 
         case 2:
         case -2:
             r = r0 + 2;
             c = c0 + 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 + 2;
             c = c0 - 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 2;
             c = c0 + 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 2;
             c = c0 - 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 + 1;
             c = c0 + 2;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 + 1;
             c = c0 - 2;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 1;
             c = c0 + 2;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 1;
             c = c0 - 2;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             break;
 
         case 1:
             r = r0 - 1;
             c = c0 + 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 1;
             c = c0 - 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 1;
             c = c0;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 - 2;
             c = c0;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             break;
 
         case -1:
             r = r0 + 1;
             c = c0 + 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 + 1;
             c = c0 - 1;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 + 1;
             c = c0;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             r = r0 + 2;
             c = c0;
-            if(legal_move(st, r0, c0, r, c))
-                moves.push_back({r0, c0, r, c});
+            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
             break;
     }
 }
 
-bool Solver::legal_move(state &st, const int r0, const int c0, const int r, const int c)
+bool Solver::legal_move(state &st, const int move)
 {
+    const int r0 = move / 1000 % 10;
+    const int c0 = move / 100 % 10;
+    const int r = move / 10 % 10;
+    const int c = move % 10;
     int temp = st.b[r][c];
-    if(possible_move(st, r0, c0, r, c))
+    
+    if(possible_move(st, move))
     {
         st.b[r][c] = st.b[r0][c0];
         st.b[r0][c0] = 0;
@@ -318,8 +328,12 @@ bool Solver::legal_move(state &st, const int r0, const int c0, const int r, cons
         return false;
 }
 
-bool Solver::possible_move(state &st, const int r0, const int c0, const int r, const int c)
+bool Solver::possible_move(state &st, const int move)
 {
+    const int r0 = move / 1000 % 10;
+    const int c0 = move / 100 % 10;
+    const int r = move / 10 % 10;
+    const int c = move % 10;
     int t_row;
     int t_col;
 
@@ -619,12 +633,13 @@ int Solver::get_value(int v)
     return v;
 }
 
-void Solver::sort_by_check(bool s, state st, std::vector<std::vector<int>> &m)
+void Solver::sort_by_check(bool s, state st, std::vector<int> &m)
 {
     int count = 0;
     int check_moves;
+    
+    int temp_m;
     state temp;
-    std::vector<int> temp_m;
     std::pair<int, int> *king_pos;
 
     if(s)
@@ -637,7 +652,7 @@ void Solver::sort_by_check(bool s, state st, std::vector<std::vector<int>> &m)
     {
         temp = st;
         // std::cout << m[i][0] << m[i][1] << m[i][2] << m[i][3] << std::endl;
-        update_state(temp, m[i][0], m[i][1], m[i][2], m[i][3]);
+        update_state(temp, m[i]);
         if(!square_is_safe(temp, !s, king_pos->first, king_pos->second))
         {
             temp_m = m[count];
@@ -656,7 +671,7 @@ void Solver::sort_by_check(bool s, state st, std::vector<std::vector<int>> &m)
     {
         temp = st;
         // std::cout << m[i][0] << m[i][1] << m[i][2] << m[i][3] << std::endl;
-        update_state(temp, m[i][0], m[i][1], m[i][2], m[i][3]);
+        update_state(temp, m[i]);
         if(temp.black_moves.size() == 1)
         {
             temp_m = m[count];
@@ -731,7 +746,7 @@ void Solver::find_mate_in(state st, int m, bool s)
         {
             ans_moves.push_back(e);
             next = st;
-            update_state(next, e[0], e[1], e[2], e[3]);
+            update_state(next, e);
             find_mate_in(next, m - 1, s);
             if(ans)
             {
@@ -743,7 +758,7 @@ void Solver::find_mate_in(state st, int m, bool s)
                 ans = true;
                 count++;
                 
-                std::vector <std::vector<int>> a;
+                std::vector<int> a;
                 state st_g_copy = st_g;
                 state temp = st_g;
                 state temp0;
@@ -755,13 +770,12 @@ void Solver::find_mate_in(state st, int m, bool s)
                     // {
                     //     std::cout << "\n\nUNACCEPTABLEEEEEEE!!!!!\n\n";
                     // }
-                    update_state(temp, ans_moves[0][0], ans_moves[0][1], ans_moves[0][2], ans_moves[0][3]);
+                    update_state(temp, ans_moves[0]);
                     std::vector<std::vector<int>>::size_type size = ans_moves.size();
                     std::cout << "MOVES: " << size << "\n";
                     for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
                     {
-                        std::cout << "move: " << ans_moves[i][0] << ans_moves[i][1] <<
-                            ans_moves[i][2] << ans_moves[i][3] << " :" << i << "\n";
+                        std::cout << "move: " << ans_moves[0] << "\n";
                     }
                     for(std::vector<std::vector<int>>::size_type i = 2; i < size; i += 2)
                     {
@@ -769,7 +783,7 @@ void Solver::find_mate_in(state st, int m, bool s)
                         {
                             std::cout << std::endl << "IN_BLACK_MOVES" << std::endl;
                             temp0 = temp;
-                            update_state(temp0, e[0], e[1], e[2], e[3]);
+                            update_state(temp0, e);
                             // if(!legal_move(temp0, ans_moves[i][0], ans_moves[i][1], ans_moves[i][2], ans_moves[i][3]))
                             // {
                             //     ans = false;
@@ -834,11 +848,10 @@ void Solver::find_mate_in(state st, int m, bool s)
                         std::cout << "\nSTATE_UPDATED_IF_OK\n";
                         for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
                         {
-                            std::cout << "move: " << ans_moves[i][0] << ans_moves[i][1] <<
-                                ans_moves[i][2] << ans_moves[i][3] << " :" << i << "\n";
+                            std::cout << "move: " << ans_moves[i] << " :" << i << "\n";
                         }
-                        update_state(temp, ans_moves[i - 1][0], ans_moves[i - 1][1], ans_moves[i - 1][2], ans_moves[i - 1][3]);
-                        update_state(temp, ans_moves[i][0], ans_moves[i][1], ans_moves[i][2], ans_moves[i][3]);
+                        update_state(temp, ans_moves[i - 1]);
+                        update_state(temp, ans_moves[i]);
                     }
                     // if(!temp.black_moves.empty() || piece_is_safe(temp, temp.black_king_pos.first, temp.black_king_pos.second))
                     // {
@@ -866,7 +879,7 @@ void Solver::find_mate_in(state st, int m, bool s)
         {
             ans_moves.push_back(e);
             next = st;
-            update_state(next, e[0], e[1], e[2], e[3]);
+            update_state(next, e);
             find_mate_in(next, m - 1, s);
             if(ans)
             {
@@ -906,7 +919,7 @@ void Solver::helpmate(state st, int m, bool s)
         {
             ans_moves.push_back(e);
             next = st;
-            update_state(next, e[0], e[1], e[2], e[3]);
+            update_state(next, e);
             helpmate(next, m - 1, s);
             if(ans)
             {
@@ -937,7 +950,7 @@ void Solver::helpmate(state st, int m, bool s)
         {
             ans_moves.push_back(e);
             next = st;
-            update_state(next, e[0], e[1], e[2], e[3]);
+            update_state(next, e);
             helpmate(next, m - 1, s);
             if(ans)
             {
@@ -976,14 +989,14 @@ void Solver::print_state(state st)
     std::cout << st.black_king_pos.first << st.black_king_pos.second << "k- ";
     for(auto e: st.black_pieces)
         std::cout << e.first << e.second << "-";
-    std::cout << std::endl;
+    std::cout << "\n";
     std::cout << "white moves: ";
     for(auto e: st.white_moves)
-        std::cout << e[0] << e[1] << e[2] << e[3] << "+ ";
-    std::cout << std::endl;
+        std::cout << e << "+ ";
+    std::cout << "\n";
     std::cout << "black moves: ";
     for(auto e: st.black_moves)
-        std::cout << e[0] << e[1] << e[2] << e[3] << "- ";
-    std::cout << std::endl;
-    std::cout << std::endl;
+        std::cout << e << "- ";
+    std::cout << "\n";
+    std::cout << "\n";
 }
