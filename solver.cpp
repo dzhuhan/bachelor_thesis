@@ -85,9 +85,13 @@ void Solver::update_state(state &st, const int move)
         }
         else if(r == (r0 - 2) && c == c0)
             st.en_passant = std::make_pair(r0 - 1, c0);
+        else if(r == 0)
+        {
+            st.en_passant = std::make_pair(-1, -1);
+            st.b[r][c] = move / 10000;
+        }
         else
             st.en_passant = std::make_pair(-1, -1);
-        promotion(st, r, c);
     }
     else if(st.b[r][c] == -1)
     {
@@ -98,9 +102,13 @@ void Solver::update_state(state &st, const int move)
         }
         else if(r == (r0 + 2) && c == c0)
             st.en_passant = std::make_pair(r0 + 1, c0);
+        else if(r == 7)
+        {
+            st.en_passant = std::make_pair(-1, -1);
+            st.b[r][c] = -move / 10000;
+        }
         else
             st.en_passant = std::make_pair(-1, -1);
-        promotion(st, r, c);
     }
     else
         st.en_passant = std::make_pair(-1, -1);
@@ -246,17 +254,45 @@ void Solver::get_moves(state &st, std::vector<int> &moves, const int r0, const i
 
         case 1:
             r = r0 - 1;
-            c = c0 + 1;
-            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
-                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
-            r = r0 - 1;
-            c = c0 - 1;
-            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
-                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
-            r = r0 - 1;
-            c = c0;
-            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
-                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+            if(r == 0)
+            {
+                c = c0 + 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                {
+                    moves.push_back(50000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(40000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(30000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(20000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                }
+                c = c0 - 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                {
+                    moves.push_back(50000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(40000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(30000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(20000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                }
+                c = c0;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                {
+                    moves.push_back(50000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(40000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(30000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(20000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                }
+            }
+            else
+            {
+                c = c0 + 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+                c = c0 - 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+                c = c0;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+            }
             r = r0 - 2;
             c = c0;
             if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
@@ -265,17 +301,45 @@ void Solver::get_moves(state &st, std::vector<int> &moves, const int r0, const i
 
         case -1:
             r = r0 + 1;
-            c = c0 + 1;
-            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
-                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
-            r = r0 + 1;
-            c = c0 - 1;
-            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
-                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
-            r = r0 + 1;
-            c = c0;
-            if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
-                moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+            if(r == 7)
+            {
+                c = c0 + 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                {
+                    moves.push_back(50000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(40000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(30000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(20000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                }
+                c = c0 - 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                {
+                    moves.push_back(50000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(40000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(30000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(20000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                }
+                c = c0;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                {
+                    moves.push_back(50000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(40000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(30000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                    moves.push_back(20000 + r0 * 1000 + c0 * 100 + r * 10 + c);
+                }
+            }
+            else
+            {
+                c = c0 + 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+                c = c0 - 1;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+                c = c0;
+                if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
+                    moves.push_back(r0 * 1000 + c0 * 100 + r * 10 + c);
+            }
             r = r0 + 2;
             c = c0;
             if(legal_move(st, r0 * 1000 + c0 * 100 + r * 10 + c))
@@ -613,14 +677,6 @@ bool Solver::square_is_safe(state &st, bool s, const int r0, const int c0)
     return true;
 }
 
-void Solver::promotion(state &st,const int r0, const int c0)
-{
-    if(r0 == 0 && c0 >= 0 && c0 < 8 && st.b[r0][c0] == 1)
-        st.b[r0][c0] = 5;
-    else if(r0 == 7 && c0 >= 0 && c0 < 8 && st.b[r0][c0] == -1)
-        st.b[r0][c0] = -5;
-}
-
 int Solver::get_value(int v)
 {
     int m;
@@ -670,16 +726,17 @@ void Solver::sort_by_check(bool s, state st, std::vector<int> &m)
     for(int i = 0; i < check_moves; i++)
     {
         temp = st;
-        // std::cout << m[i][0] << m[i][1] << m[i][2] << m[i][3] << std::endl;
+        // std::cout << "\n\n";
+        // std::cout << m[i] << std::endl;
         update_state(temp, m[i]);
         if(temp.black_moves.size() == 1)
         {
             temp_m = m[count];
             m[count] = m[i];
             m[i] = temp_m;
-            // std::cout << m[i][0] << m[i][1] << m[i][2] << m[i][3] << std::endl;
-            // std::cout << king_pos->first << king_pos->second << std::endl;
-            // std::cout << size << std::endl;
+            // std::cout << "m[i]: " << m[i] << std::endl;
+            // std::cout << "count: " << count << std::endl;
+            // std::cout << "\n\n";
             count++;
         }
     }
@@ -1088,14 +1145,14 @@ void Solver::print_state(state st)
     std::cout << st.black_king_pos.first << st.black_king_pos.second << "k- ";
     for(auto e: st.black_pieces)
         std::cout << e.first << e.second << "-";
-    std::cout << "\n";
+    std::cout << std::endl;
     std::cout << "white moves: ";
     for(auto e: st.white_moves)
         std::cout << e << "+ ";
-    std::cout << "\n";
+    std::cout << std::endl;
     std::cout << "black moves: ";
     for(auto e: st.black_moves)
         std::cout << e << "- ";
-    std::cout << "\n";
-    std::cout << "\n";
+    std::cout << std::endl;
+    std::cout << std::endl;
 }

@@ -46,14 +46,6 @@ public:
     bool select;
     bool edit;
 
-//    struct threat_moves
-//    {
-//        inline bool operator() (std::vector<int> m0, std::vector<int> m1)
-//        {
-//            return ();
-//        }
-//    };
-
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void mousePressEvent(QMouseEvent *event);

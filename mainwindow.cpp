@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "solver.h"
+#include "promotionwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -203,12 +204,15 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             (st_g.b[row][col] < 0 && st_g.b[r][c] >= 0)) &&
             (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c) && is_turn(row, col))))
         {
-            std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
-            Solver::update_state(st_g, row * 1000 + col * 100 + r * 10 + c);
+            PromotionWindow promotion;
+            if(true)
+            {
+                promotion.setModal(true);
+                promotion.exec();
+            }
+            Solver::update_state(st_g, promotion.prom + row * 1000 + col * 100 + r * 10 + c);
             set_board();
             select = false;
-            std::cout << "AAAAAAAAAAAAAAAA!!!!!!!!" << std::endl;
-
         }
         else
         {

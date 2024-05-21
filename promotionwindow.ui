@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PromotionWindow</class>
+ <widget class="QDialog" name="PromotionWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>47</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Promotion</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QPushButton" name="Knight">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>10</y>
+     <width>71</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Knight</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Queen">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>71</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Queen</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Rook">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>10</y>
+     <width>71</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Rook</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Bishop">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>10</y>
+     <width>71</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bishop</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

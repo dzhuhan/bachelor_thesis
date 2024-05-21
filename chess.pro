@@ -12,15 +12,18 @@ SOURCES += \
     global_data.cpp \
     main.cpp \
     mainwindow.cpp \
+    promotionwindow.cpp \
     solver.cpp
 
 HEADERS += \
     global_data.h \
     mainwindow.h \
+    promotionwindow.h \
     solver.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    promotionwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
