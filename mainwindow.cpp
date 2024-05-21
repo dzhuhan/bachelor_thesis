@@ -205,7 +205,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c) && is_turn(row, col))))
         {
             PromotionWindow promotion;
-            if(true)
+            if((r == 0 && st_g.b[row][col] == 1)|| (r == 7 && st_g.b[row][col] == -1))
             {
                 promotion.setModal(true);
                 promotion.exec();
