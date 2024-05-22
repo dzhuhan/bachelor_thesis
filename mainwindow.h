@@ -49,8 +49,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void mousePressEvent(QMouseEvent *event);
-    void set_board();
     void init_board();
+    void clear_board();
+    void set_board();
     bool is_turn(const int r0, const int c0);
     QImage* which_piece(int a);
 
@@ -65,7 +66,9 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
 
     void on_comboBox_2_activated(int index);
-
+    
+    void on_Clear_clicked();
+    
 private:
     Ui::MainWindow *ui;
 };

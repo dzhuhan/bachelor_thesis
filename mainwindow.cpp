@@ -139,6 +139,20 @@ void MainWindow::init_board()
     ans = false;
 }
 
+void MainWindow::clear_board()
+{
+    st_g.white_pieces.clear();
+    st_g.black_pieces.clear();
+    st_g.white_moves.clear();
+    st_g.black_moves.clear();
+    
+    for(int r = 0; r < 8; r++)
+        for(int c = 0; c < 8; c++)
+            st_g.b[r][c] = 0;
+            
+    set_board();
+}
+
 void MainWindow::set_board()
 {
     int x;
@@ -160,7 +174,6 @@ void MainWindow::set_board()
                 y = r * 50 + 55;
                 QPainter painter(&processBoard);
                 painter.drawImage(x, y, *piece);
-                // ui->label->setPixmap(QPixmap::fromImage(processBoard));
             }
         }
     }
@@ -618,5 +631,11 @@ void MainWindow::on_comboBox_2_activated(int index)
         side = true;
     else if(index == 1)
         side = false;
+}
+
+
+void MainWindow::on_Clear_clicked()
+{
+    clear_board();
 }
 
