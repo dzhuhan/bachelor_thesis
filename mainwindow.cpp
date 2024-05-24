@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setFixedSize(QSize(736, 555));
+    this->setFixedSize(QSize(695, 555));
 
     board.load(":/graphics/board.png");
 
