@@ -225,24 +225,12 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
                 promotion.exec();
                 st_g.b[r][c] = (st_g.b[r][c] > 0) ? (promotion.prom / 10000) : (promotion.prom / -10000);
             }
-            if(st_g.b[r][c] == 6)
-            {
-                if(st_g.b[st_g.white_king_pos.first][st_g.white_king_pos.second] == 6)
-                {
+            if(st_g.b[r][c] == 6 && st_g.b[st_g.white_king_pos.first][st_g.white_king_pos.second] == 6
+                && st_g.white_king_pos != std::make_pair(r, c))
                     st_g.b[st_g.white_king_pos.first][st_g.white_king_pos.second] = 0;
-                    st_g.white_pieces.erase(std::remove(st_g.white_pieces.begin(), st_g.white_pieces.end(), st_g.white_king_pos));
-                }
-                st_g.white_king_pos = std::make_pair(r, c);
-            }
-            else if(st_g.b[r][c] == -6)
-            {
-                if(st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] == -6)
-                {
-                    st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] = 0;
-                    st_g.black_pieces.erase(std::remove(st_g.black_pieces.begin(), st_g.black_pieces.end(), st_g.black_king_pos));
-                }
-                st_g.black_king_pos = std::make_pair(r, c);
-            }
+            else if(st_g.b[r][c] == -6 && st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] == -6
+                && st_g.black_king_pos != std::make_pair(r, c))
+                    st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] = 0;             
             
             set_board();
             draw_board();
