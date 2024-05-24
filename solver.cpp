@@ -13,14 +13,14 @@ void Solver::update_state(state &st, const int move)
     {
         st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(r0, c0)));
         st.white_pieces.push_back(std::make_pair(r, c));
-        if(st.b[r][c] != 0)
+        if(st.b[r][c] < 0)
             st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(r, c)));
     }
     else if(st.b[r0][c0] < 0)
     {
         st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(r0, c0)));
         st.black_pieces.push_back(std::make_pair(r, c));
-        if(st.b[r][c] != 0)
+        if(st.b[r][c] > 0)
             st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(r, c)));
     }
     st.b[r][c] = st.b[r0][c0];
@@ -32,14 +32,14 @@ void Solver::update_state(state &st, const int move)
         st.white_king_pos = std::make_pair(r, c);
         st.white_kingside_castle_right = false;
         st.white_queenside_castle_right = false;
-        if(r0 == 7 && c0 == 4 && r == 7 && c == 6)
+        if(r0 == 7 && c0 == 4 && r == 7 && c == 6 && st.b[7][7] == 4)
         {
             st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(7, 7)));
             st.white_pieces.push_back(std::make_pair(7, 5));
             st.b[7][5] = 4;
             st.b[7][7] = 0;
         }
-        else if(r0 == 7 && c0 == 4 && r == 7 && c == 2)
+        else if(r0 == 7 && c0 == 4 && r == 7 && c == 2 && st.b[7][0] == 4)
         {
             st.white_pieces.erase(std::remove(st.white_pieces.begin(), st.white_pieces.end(), std::make_pair(7, 0)));
             st.white_pieces.push_back(std::make_pair(7, 3));
@@ -52,14 +52,14 @@ void Solver::update_state(state &st, const int move)
         st.black_king_pos = std::make_pair(r, c);
         st.black_kingside_castle_right = false;
         st.black_queenside_castle_right = false;
-        if(r0 == 0 && c0 == 4 && r == 0 && c == 6)
+        if(r0 == 0 && c0 == 4 && r == 0 && c == 6 && st.b[0][7] == -4)
         {
             st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(0, 7)));
             st.black_pieces.push_back(std::make_pair(0, 5));
             st.b[0][5] = -4;
             st.b[0][7] = 0;
         }
-        else if(r0 == 0 && c0 == 4 && r == 0 && c == 2)
+        else if(r0 == 0 && c0 == 4 && r == 0 && c == 2  && st.b[0][0] == -4)
         {
             st.black_pieces.erase(std::remove(st.black_pieces.begin(), st.black_pieces.end(), std::make_pair(0, 0)));
             st.black_pieces.push_back(std::make_pair(0, 3));

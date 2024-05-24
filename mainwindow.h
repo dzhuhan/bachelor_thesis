@@ -1,14 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include "QFileDialog"
-#include "QFile"
-#include <QPainter>
-#include <QMouseEvent>
 #include <iostream>
 #include <chrono>
 #include <ctype.h>
+#include "QMainWindow"
+#include "QMouseEvent"
+#include "QPainter"
+#include "QFileDialog"
+#include "QFile"
+#include "editwindow.h"
+#include "promotionwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -50,8 +52,9 @@ public:
     ~MainWindow();
     void mousePressEvent(QMouseEvent *event);
     void init_board();
-    void clear_board();
     void set_board();
+    void clear_board();
+    void draw_board();
     bool is_turn(const int r0, const int c0);
     QImage* which_piece(int a);
 
@@ -71,5 +74,6 @@ private slots:
     
 private:
     Ui::MainWindow *ui;
+    Editwindow *ew;
 };
 #endif // MAINWINDOW_H

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "solver.h"
-#include "promotionwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,11 +31,12 @@ MainWindow::MainWindow(QWidget *parent)
     edit = false;
     select = false;
     problem = 0;
+    ew = nullptr;
 
     processBoard = board;
     ui->label->setPixmap(QPixmap::fromImage(board));
     ui->textEdit->setReadOnly(true);
-    init_board();
+    set_board();
 }
 
 MainWindow::~MainWindow()
@@ -82,6 +82,13 @@ QImage* MainWindow::which_piece(int a)
 
 void MainWindow::init_board()
 {
+    for(int r = 0; r < 8; r++)
+        for(int c = 0; c < 8; c++)
+            st_g.b[r][c] = init[r][c];
+    set_board();
+}
+void MainWindow::set_board()
+{
     int x;
     int y;
 
@@ -89,6 +96,11 @@ void MainWindow::init_board()
     processBoard = board;
     ui->label->setPixmap(QPixmap::fromImage(board));
 
+    st_g.white_pieces.clear();
+    st_g.black_pieces.clear();
+    st_g.white_moves.clear();
+    st_g.black_moves.clear();
+    
     st_g.white_kingside_castle_right = true;
     st_g.white_queenside_castle_right = true;
     st_g.black_kingside_castle_right = true;
@@ -98,7 +110,6 @@ void MainWindow::init_board()
         for(int c = 0; c < 8; c++)
         {
             piece = which_piece(init[r][c]);
-            st_g.b[r][c] = init[r][c];
 
             if(st_g.b[r][c] > 0)
             {
@@ -133,10 +144,6 @@ void MainWindow::init_board()
                 Solver::get_moves(st_g, st_g.black_moves, r, c);
         }
     }
-
-    turn = true;
-    select = false;
-    ans = false;
 }
 
 void MainWindow::clear_board()
@@ -150,10 +157,10 @@ void MainWindow::clear_board()
         for(int c = 0; c < 8; c++)
             st_g.b[r][c] = 0;
             
-    set_board();
+    draw_board();
 }
 
-void MainWindow::set_board()
+void MainWindow::draw_board()
 {
     int x;
     int y;
@@ -203,28 +210,72 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     r = ((e->pos().y() - 77 >= 0) ? e->pos().y() - 77 : -100) / 50;
     c = ((e->pos().x() - 55 >= 0) ? e->pos().x() - 55 : -100) / 50;
 
-    if(select == false)
+    if(select == false && c >= 0 && c < 8 && r >= 0 && r < 8)
     {
         row = r;
         col = c;
 
-        if(st_g.b[r][c] != 0)
+        if(ew != nullptr && ew->piece != 0)
+        {
+            st_g.b[r][c] = ew->piece;
+            PromotionWindow promotion;
+            if((r == 0 && st_g.b[r][c] == 1) || (r == 7 && st_g.b[r][c] == -1))
+            {
+                promotion.setModal(true);
+                promotion.exec();
+                st_g.b[r][c] = (st_g.b[r][c] > 0) ? (promotion.prom / 10000) : (promotion.prom / -10000);
+            }
+            if(st_g.b[r][c] == 6)
+            {
+                if(st_g.b[st_g.white_king_pos.first][st_g.white_king_pos.second] == 6)
+                {
+                    st_g.b[st_g.white_king_pos.first][st_g.white_king_pos.second] = 0;
+                    st_g.white_pieces.erase(std::remove(st_g.white_pieces.begin(), st_g.white_pieces.end(), st_g.white_king_pos));
+                }
+                st_g.white_king_pos = std::make_pair(r, c);
+            }
+            else if(st_g.b[r][c] == -6)
+            {
+                if(st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] == -6)
+                {
+                    st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] = 0;
+                    st_g.black_pieces.erase(std::remove(st_g.black_pieces.begin(), st_g.black_pieces.end(), st_g.black_king_pos));
+                }
+                st_g.black_king_pos = std::make_pair(r, c);
+            }
+            
+            set_board();
+            draw_board();
+            ew->piece = 0;
+            select = false;
+        }
+        else if(st_g.b[r][c] != 0)
             select = true;
     }
     else if(c >= 0 && c < 8 && r >= 0 && r < 8)
     {
-        if(st_g.b[row][col] != 0 && ((st_g.b[row][col] > 0 && st_g.b[r][c] <= 0) ||
-            (st_g.b[row][col] < 0 && st_g.b[r][c] >= 0)) &&
-            (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c) && is_turn(row, col))))
+        if(st_g.b[row][col] != 0
+            && (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c)
+            && is_turn(row, col))))
         {
+            if(row == r && col == c)
+            {
+                select = false;
+                return;
+            }
+            if(st_g.b[row][col] > 0 && st_g.b[r][c] > 0)
+                st_g.white_pieces.erase(std::remove(st_g.white_pieces.begin(), st_g.white_pieces.end(), std::make_pair(r, c)));
+            else if(st_g.b[row][col] < 0 && st_g.b[r][c] < 0)
+                st_g.black_pieces.erase(std::remove(st_g.black_pieces.begin(), st_g.black_pieces.end(), std::make_pair(r, c)));
+              
             PromotionWindow promotion;
-            if((r == 0 && st_g.b[row][col] == 1)|| (r == 7 && st_g.b[row][col] == -1))
+            if((r == 0 && st_g.b[row][col] == 1) || (r == 7 && st_g.b[row][col] == -1))
             {
                 promotion.setModal(true);
                 promotion.exec();
             }
             Solver::update_state(st_g, promotion.prom + row * 1000 + col * 100 + r * 10 + c);
-            set_board();
+            draw_board();
             select = false;
         }
         else
@@ -257,11 +308,7 @@ void MainWindow::on_actionopen_triggered()
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
 
-    init_board();
-    st_g.white_pieces.clear();
-    st_g.black_pieces.clear();
-    st_g.white_moves.clear();
-    st_g.black_moves.clear();
+    clear_board();
 
     if(in.readLine().contains("/"))
     {
@@ -544,16 +591,15 @@ void MainWindow::on_actionopen_triggered()
             std::cout << move << std::endl;
         }
     }
-    set_board();
+    draw_board();
     file.close();
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    st_g.white_pieces.clear();
-    st_g.black_pieces.clear();
-    st_g.white_moves.clear();
-    st_g.black_moves.clear();
+    turn = true;
+    select = false;
+    ans = false;
     init_board();
 }
 
@@ -597,7 +643,7 @@ void MainWindow::on_pushButton_2_clicked()
     std::cout << "time: " << du.count() << std::endl;
     std::cout << "states checked: " << count <<std::endl;
 
-    set_board();
+    draw_board();
 
     for (auto e: ans_moves)
     {
@@ -618,6 +664,14 @@ void MainWindow::on_spinBox_valueChanged(int arg1)
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     edit = (bool)arg1;
+    if(ew == nullptr)
+        ew = new Editwindow(this);
+    if(edit)
+        ew->show();
+    else if(ew != nullptr)
+    {
+        ew->close();
+    }
 }
 
 void MainWindow::on_comboBox_currentIndexChanged(int index)
