@@ -22,7 +22,7 @@ public:
     static void find_mate_in(state st, const int m, bool s);
 
     static void helpmate(state st, const int m, bool s);
-    static void other_problem(state st, const int m, bool s);
+    static void selfmate(state st, const int m, bool s);
     static void print_state(state st);
 };
 

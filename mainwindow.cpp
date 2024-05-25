@@ -608,22 +608,11 @@ void MainWindow::on_pushButton_2_clicked()
             break;
 
         case 1:
-            // for(int r = 0; r < 8; r++)
-            // {
-            //     for(int c = 0; c < 8; c++)
-            //     {
-            //         if(st_g.b[r][c] > 0)
-            //             white_pieces_value += Solver::get_value(st_g.b[r][c]);
-            //         else if(st_g.b[r][c] < 0)
-            //             black_pieces_value += Solver::get_value(st_g.b[r][c]);
-            //     }
-            // }
-            // value_diff = white_pieces_value + black_pieces_value;
             Solver::helpmate(st_g, (aom * 2), side);
             break;
 
         case 2:
-            Solver::other_problem(st_g, (aom * 2 - 1), side);
+            Solver::selfmate(st_g, (aom * 2), side);
             break;
     }
     auto stop = std::chrono::steady_clock::now();
