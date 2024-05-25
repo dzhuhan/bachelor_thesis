@@ -1125,12 +1125,7 @@ void Solver::selfmate(state st, int m, bool s)
         {
             count++;
             ans_moves.push_back(st.black_moves[0]);
-            std::vector<std::vector<int>>::size_type size = ans_moves.size();
-            std::cout << "MOVESbefore: " << size << "\n";
-                for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                {
-                    std::cout << "move: " << ans_moves[i] << "\n";
-                }
+            
             std::vector<int> a;
             state st_g_copy = st_g;
             state temp = st_g;
@@ -1177,26 +1172,26 @@ void Solver::selfmate(state st, int m, bool s)
                                 {
                                     ans = false;
                                     ans_moves = a;
-                                    break;
+                                    continue;
                                 }
                             }
-                            else if((k < size - i) && (size - i > 2))
-                            {
-                                std::cout << "\nE_IN_ANS_MOVES\n";
-                                ans_moves.clear();
-                                selfmate(temp0, k, true);
-                                std::cout << "size - i: " << size - i << "\n";
-                                std::cout << "ans: " << ans << "\n";
-                                std::cout << "i: " << i << "\n";
-                                std::cout << "k: " << k << "\n";
-                                if(ans)
-                                {
-                                    std::cout << "\nmate_when_SHOULD_NOT_be\n";
-                                    ans = false;
-                                    ans_moves = a;
-                                    break;
-                                }
-                            }
+                            // else if((k < size - i) && (size - i > 2))
+                            // {
+                            //     std::cout << "\nE_IN_ANS_MOVES\n";
+                            //     ans_moves.clear();
+                            //     selfmate(temp0, k, true);
+                            //     std::cout << "size - i: " << size - i << "\n";
+                            //     std::cout << "ans: " << ans << "\n";
+                            //     std::cout << "i: " << i << "\n";
+                            //     std::cout << "k: " << k << "\n";
+                            //     if(ans)
+                            //     {
+                            //         std::cout << "\nmate_when_SHOULD_NOT_be\n";
+                            //         ans = false;
+                            //         ans_moves = a;
+                            //         break;
+                            //     }
+                            // }
                             ans = true;
                             ans_moves = a;
                         }
