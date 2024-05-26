@@ -218,6 +218,14 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         row = r;
         col = c;
 
+        if(e->buttons() == Qt::RightButton)
+        {
+            if(st_g.b[r][c] != 0)
+                st_g.b[r][c] = 0;
+            select = false;
+            set_board();
+            draw_board();
+        }
         if(ew != nullptr && ew->piece != 0)
         {
             st_g.b[r][c] = ew->piece;
