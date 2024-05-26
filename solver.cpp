@@ -1097,6 +1097,7 @@ void Solver::selfmate(state st, int m, bool s)
         // }
         for(auto e: st.black_moves)
         {
+            ans = false;
             ans_moves.push_back(e);
             next = st;
             update_state(next, e);
@@ -1108,13 +1109,14 @@ void Solver::selfmate(state st, int m, bool s)
             if(m == 1 && next.white_moves.empty() && 
                 !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
             {
-                std::cout << "qwerqwerqwerqwer\n";
-                ans_moves.pop_back();
+                //std::cout << "qwerqwerqwerqwer" << std::endl;
                 ans = true;
+                ans_moves.pop_back();
             }
             else if(m == 1)
             {
                 ans = false;
+                //std::cout << "fghjfghjfghjfghjfghj" << std::endl;
                 ans_moves.pop_back();
                 return;
             }
@@ -1214,7 +1216,7 @@ void Solver::selfmate(state st, int m, bool s)
             }
             if(ans)
             {
-                std::cout << "sadfasdfasdf";
+                // std::cout << "sadfasdfasdf";
                 st_g = next;
                 return;
             }
