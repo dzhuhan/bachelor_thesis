@@ -253,7 +253,11 @@ background-color: rgb(255, 255, 255);</string>
    <addaction name="menuopen"/>
    <addaction name="menuoptions"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(246, 245, 244);</string>
+   </property>
+  </widget>
   <action name="actiontheme_2">
    <property name="text">
     <string>theme</string>

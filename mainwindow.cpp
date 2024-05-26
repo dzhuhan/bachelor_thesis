@@ -36,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent)
     processBoard = board;
     ui->label->setPixmap(QPixmap::fromImage(board));
     ui->textEdit->setReadOnly(true);
+    
+    stat = new QLabel("");
+    ui->statusbar->addWidget(stat);
     set_board();
 }
 
@@ -619,11 +622,18 @@ void MainWindow::on_pushButton_2_clicked()
     }
     auto stop = std::chrono::steady_clock::now();
     std::chrono::duration<double> du = stop - start;
-    std::cout << "time: " << du.count() << std::endl;
-    std::cout << "states checked: " << count <<std::endl;
-
+    auto hrs = std::chrono::duration_cast<std::chrono::hours>(du);
+    auto min = std::chrono::duration_cast<std::chrono::minutes>(du - hrs);
+    auto sec = std::chrono::duration_cast<std::chrono::seconds>(du - hrs - min);
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(du - hrs - min - sec);
+    ss << "time: " << hrs.count() << "h " << min.count() << "m " 
+        << sec.count() << "s " << ms.count() << "ms" << "        " << "states checked: " << count;
+    
+    stat->setText(QString::fromStdString(ss.str()));
+    
     draw_board();
 
+    ss.str(std::string());
     for (auto e: ans_moves)
     {
         ss << (char)(e / 100 % 10 + 97);

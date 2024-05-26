@@ -9,6 +9,7 @@
 #include "QPainter"
 #include "QFileDialog"
 #include "QFile"
+#include "QLabel"
 #include "editwindow.h"
 #include "promotionwindow.h"
 
@@ -75,5 +76,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Editwindow *ew;
+    QLabel *stat;
 };
 #endif // MAINWINDOW_H
