@@ -353,6 +353,7 @@ void MainWindow::on_actionopen_triggered()
                             st_g.b[r][c] = 3;
                             break;
                         case 'N':
+                        case 'S':
                             st_g.b[r][c] = 2;
                             break;
                         case 'P':
@@ -372,6 +373,7 @@ void MainWindow::on_actionopen_triggered()
                             st_g.b[r][c] = -3;
                             break;
                         case 'n':
+                        case 's':
                             st_g.b[r][c] = -2;
                             break;
                         case 'p':
