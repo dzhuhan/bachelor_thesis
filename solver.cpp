@@ -1177,23 +1177,23 @@ void Solver::selfmate(state st, int m, bool s)
                                     continue;
                                 }
                             }
-                            // else if((k < size - i) && (size - i > 2))
-                            // {
-                            //     std::cout << "\nE_IN_ANS_MOVES\n";
-                            //     ans_moves.clear();
-                            //     selfmate(temp0, k, true);
-                            //     std::cout << "size - i: " << size - i << "\n";
-                            //     std::cout << "ans: " << ans << "\n";
-                            //     std::cout << "i: " << i << "\n";
-                            //     std::cout << "k: " << k << "\n";
-                            //     if(ans)
-                            //     {
-                            //         std::cout << "\nmate_when_SHOULD_NOT_be\n";
-                            //         ans = false;
-                            //         ans_moves = a;
-                            //         break;
-                            //     }
-                            // }
+                            else if((k < size - i) && (size - i > 2))
+                            {
+                                std::cout << "\nE_IN_ANS_MOVES\n";
+                                ans_moves.clear();
+                                selfmate(temp0, k, true);
+                                std::cout << "size - i: " << size - i << "\n";
+                                std::cout << "ans: " << ans << "\n";
+                                std::cout << "i: " << i << "\n";
+                                std::cout << "k: " << k << "\n";
+                                if(ans)
+                                {
+                                    std::cout << "\nmate_when_SHOULD_NOT_be\n";
+                                    ans = false;
+                                    ans_moves = a;
+                                    break;
+                                }
+                            }//asdf
                             ans = true;
                             ans_moves = a;
                         }
