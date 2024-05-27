@@ -722,7 +722,7 @@ void Solver::sort_by_check(bool s, state st, std::vector<int> &m)
     {
         temp = st;
         update_state(temp, m[i]);
-        if(temp.black_moves.size() == 1)
+        if(temp.black_moves.size() == 1) // to fix...
         {
             temp_m = m[count];
             m[count] = m[i];
@@ -1050,6 +1050,28 @@ void Solver::helpmate(state st, int m, bool s)
     }
 }
 
+void Solver::selfmate_heuristic(state &st)
+{
+    int count = 0;
+    int swap;
+    state temp;
+    auto &m = st.white_moves;
+
+    std::vector<std::vector<int>>::size_type size = m.size();
+    for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
+    {
+        temp = st;
+        update_state(temp, m[i]);
+        if(temp.black_moves.size() < 4 
+            /*&& temp.b[temp.black_moves[0] / 10 % 10][temp.black_moves[0] % 10] == 0*/)
+        {
+            swap = m[count];
+            m[count] = m[i];
+            m[i] = swap;
+            count++;
+        }
+    } 
+}
 void Solver::selfmate(state st, int m, bool s)
 {
     if(m < 1)
@@ -1060,10 +1082,8 @@ void Solver::selfmate(state st, int m, bool s)
     if(s == true)
     {
         s = false;
-        // if(s_sort)
-        // {
-        //     sort_by_check(false, st, st.black_moves);
-        // }
+        selfmate_heuristic(st);
+        
         for(auto e: st.white_moves)
         {
             ans_moves.push_back(e);
