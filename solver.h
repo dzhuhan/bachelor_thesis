@@ -21,6 +21,7 @@ public:
     static void sort_by_check(bool s, state st, std::vector<int> &m);
     static void find_mate_in(state st, const int m, bool s);
 
+    static void helpmate_heuristic(state &st);
     static void helpmate(state st, const int m, bool s);
     
     static void selfmate_heuristic(state &st);

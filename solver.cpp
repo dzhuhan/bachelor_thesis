@@ -979,6 +979,32 @@ void Solver::find_mate_in(state st, int m, bool s)
     }
 }
 
+void Solver::helpmate_heuristic(state &st)
+{
+    int count = 0;
+    int swap;
+    state temp;
+    auto &m = st.black_moves;
+
+    std::vector<std::vector<int>>::size_type size = m.size();
+    for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
+    {
+        if(m[i] / 1000 % 10 == st.black_king_pos.first && m[i] / 100 % 10 == st.black_king_pos.second)
+        {
+            swap = m[count];
+            m[count] = m[i];
+            m[i] = swap;
+            count++;
+        }
+    }
+    if(count < 2)
+    {
+        swap = m[size - 1];
+        m[size - 1] = m[0];
+        m[0] = swap;
+    }
+}
+
 void Solver::helpmate(state st, int m, bool s)
 {
     if(m < 1)
@@ -1020,10 +1046,8 @@ void Solver::helpmate(state st, int m, bool s)
     else
     {
         s = true;
-        // if(s_sort)
-        // {
-        //     sort_by_check(false, st, st.black_moves);
-        // }
+        helpmate_heuristic(st);
+        
         for(auto e: st.black_moves)
         {
             ans_moves.push_back(e);
