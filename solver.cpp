@@ -983,10 +983,12 @@ void Solver::helpmate_heuristic(state &st)
 {
     int count = 0;
     int swap;
-    state temp;
     auto &m = st.black_moves;
-
     std::vector<std::vector<int>>::size_type size = m.size();
+    
+    if(size == 0)
+        return;
+    
     for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
     {
         if(m[i] / 1000 % 10 == st.black_king_pos.first && m[i] / 100 % 10 == st.black_king_pos.second)
