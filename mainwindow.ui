@@ -354,16 +354,26 @@ border-radius: 4px;</string>
    </property>
   </widget>
   <action name="actiontheme_2">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/themes.png</normaloff>:/icons/themes.png</iconset>
+   </property>
    <property name="text">
     <string>theme</string>
    </property>
   </action>
   <action name="actionopen">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
+   </property>
    <property name="text">
     <string>open</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
