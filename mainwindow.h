@@ -4,12 +4,14 @@
 #include <iostream>
 #include <chrono>
 #include <ctype.h>
+#include "QTextCharFormat"
 #include "QMainWindow"
 #include "QMouseEvent"
 #include "QPainter"
 #include "QFileDialog"
 #include "QFile"
 #include "QLabel"
+#include "global_data.h"
 #include "editwindow.h"
 #include "promotionwindow.h"
 
@@ -48,6 +50,9 @@ public:
     bool side;
     bool select;
     bool edit;
+    
+    int jump;
+    std::vector<state> st_arr;
 
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -56,6 +61,7 @@ public:
     void set_board();
     void clear_board();
     void draw_board();
+    void highlight_move();
     bool is_turn(const int r0, const int c0);
     QImage* which_piece(int a);
 
@@ -68,14 +74,18 @@ private slots:
     void on_spinBox_valueChanged(int arg1);
     void on_checkBox_stateChanged(int arg1);
     void on_comboBox_currentIndexChanged(int index);
-
     void on_comboBox_2_activated(int index);
-    
     void on_Clear_clicked();
+    void on_previous_clicked();
+    void on_next_clicked();
+    void on_first_clicked();
+    void on_last_clicked();
     
 private:
     Ui::MainWindow *ui;
     Editwindow *ew;
     QLabel *stat;
+    QTextCharFormat *jump_fmt;
+    QTextCursor *jump_cursor;
 };
 #endif // MAINWINDOW_H

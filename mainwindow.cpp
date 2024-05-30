@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setFixedSize(QSize(695, 555));
+    this->setFixedSize(QSize(663, 518));
 
     board.load(":/graphics/board.png");
 
@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
     
     stat = new QLabel("");
     ui->statusbar->addWidget(stat);
+    jump_fmt = new QTextCharFormat();
+    jump_cursor = new QTextCursor(ui->textEdit->document());
     set_board();
 }
 
@@ -85,6 +87,10 @@ QImage* MainWindow::which_piece(int a)
 
 void MainWindow::init_board()
 {
+    jump = 0;
+    st_arr.clear();
+    ans_moves.clear();
+    
     for(int r = 0; r < 8; r++)
         for(int c = 0; c < 8; c++)
             st_g.b[r][c] = init[r][c];
@@ -129,8 +135,8 @@ void MainWindow::set_board()
 
             if(piece != nullptr)
             {
-                x = c * 50 + 55;
-                y = r * 50 + 55;
+                x = c * 50 + 37;
+                y = r * 50 + 37;
                 QPainter painter(&processBoard);
                 painter.drawImage(x, y, *piece);
                 ui->label->setPixmap(QPixmap::fromImage(processBoard));
@@ -151,6 +157,10 @@ void MainWindow::set_board()
 
 void MainWindow::clear_board()
 {
+    jump = 0;
+    st_arr.clear();
+    ans_moves.clear();
+    
     st_g.white_pieces.clear();
     st_g.black_pieces.clear();
     st_g.white_moves.clear();
@@ -180,8 +190,8 @@ void MainWindow::draw_board()
 
             if(piece != nullptr)
             {
-                x = c * 50 + 55;
-                y = r * 50 + 55;
+                x = c * 50 + 37;
+                y = r * 50 + 37;
                 QPainter painter(&processBoard);
                 painter.drawImage(x, y, *piece);
             }
@@ -210,8 +220,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     int c;
     int r;
 
-    r = ((e->pos().y() - 77 >= 0) ? e->pos().y() - 77 : -100) / 50;
-    c = ((e->pos().x() - 55 >= 0) ? e->pos().x() - 55 : -100) / 50;
+    r = ((e->pos().y() - 58 >= 0) ? e->pos().y() - 58 : -100) / 50;
+    c = ((e->pos().x() - 37 >= 0) ? e->pos().x() - 37 : -100) / 50;
 
     if(select == false && c >= 0 && c < 8 && r >= 0 && r < 8)
     {
@@ -221,10 +231,14 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         if(e->buttons() == Qt::RightButton)
         {
             if(st_g.b[r][c] != 0)
+            {
                 st_g.b[r][c] = 0;
-            select = false;
-            set_board();
-            draw_board();
+                select = false;
+                jump = 0;
+                st_arr.clear();
+                set_board();
+                draw_board();
+            }
         }
         if(ew != nullptr && ew->piece != 0)
         {
@@ -243,6 +257,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
                 && st_g.black_king_pos != std::make_pair(r, c))
                     st_g.b[st_g.black_king_pos.first][st_g.black_king_pos.second] = 0;             
             
+            jump = 0;
+            st_arr.clear();
             set_board();
             draw_board();
             ew->piece = 0;
@@ -273,6 +289,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
                 promotion.setModal(true);
                 promotion.exec();
             }
+            jump = 0;
+            st_arr.clear();
             Solver::update_state(st_g, promotion.prom + row * 1000 + col * 100 + r * 10 + c);
             draw_board();
             select = false;
@@ -610,26 +628,37 @@ void MainWindow::on_pushButton_2_clicked()
 {
     count = 0;
     ans = false;
-    ans_moves.clear();
-    ui->textEdit->clear();
+    state temp;
     std::stringstream ss;
+        
+    ans_moves.clear();
+    st_arr.clear();
+    ui->textEdit->clear();
 
+    
     auto start = std::chrono::steady_clock::now();
-    //std::cout << "PROBLEM: " << problem << "\n";
+
     switch(problem)
     {
         case 0:
+            jump = aom * 2 - 1;
+            st_arr.push_back(st_g);
             Solver::find_mate_in(st_g, (aom * 2 - 1), side);
             break;
 
         case 1:
+            jump = aom * 2;
+            st_arr.push_back(st_g);
             Solver::helpmate(st_g, (aom * 2), side);
             break;
 
         case 2:
+            jump = aom * 2;
+            st_arr.push_back(st_g);
             Solver::selfmate(st_g, (aom * 2), side);
             break;
     }
+    
     auto stop = std::chrono::steady_clock::now();
     std::chrono::duration<double> du = stop - start;
     auto hrs = std::chrono::duration_cast<std::chrono::hours>(du);
@@ -638,21 +667,36 @@ void MainWindow::on_pushButton_2_clicked()
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(du - hrs - min - sec);
     ss << "time: " << hrs.count() << "h " << min.count() << "m " 
         << sec.count() << "s " << ms.count() << "ms" << "        " << "states checked: " << count;
-    
     stat->setText(QString::fromStdString(ss.str()));
     
     draw_board();
 
-    ss.str(std::string());
-    for (auto e: ans_moves)
+    if(ans)
     {
-        ss << (char)(e / 100 % 10 + 97);
-        ss << 8 - e / 1000 % 10;
-        ss << (char)(e % 10 + 97);
-        ss << 8- e / 10 % 10;
-        ss << '\n';
+        ss.str(std::string());
+        for (long i = 0; i < ans_moves.size(); i++)
+        {
+            temp = st_arr[i];
+            Solver::update_state(temp, ans_moves[i]);
+            st_arr.push_back(temp);
+            
+            ss << (char)(ans_moves[i] / 100 % 10 + 97);
+            ss << 8 - ans_moves[i] / 1000 % 10;
+            ss << (char)(ans_moves[i] % 10 + 97);
+            ss << 8- ans_moves[i] / 10 % 10;
+            if(i % 2 == 1)
+                ss << '\n';
+            else
+                ss << ' ';
+        }
+        ui->textEdit->setText(QString::fromStdString(ss.str()));
+        highlight_move();
     }
-    ui->textEdit->setText(QString::fromStdString(ss.str()));
+    else
+    {
+        jump = 0;
+        st_arr.clear();
+    }
 }
 
 void MainWindow::on_spinBox_valueChanged(int arg1)
@@ -690,5 +734,74 @@ void MainWindow::on_comboBox_2_activated(int index)
 void MainWindow::on_Clear_clicked()
 {
     clear_board();
+}
+
+void MainWindow::highlight_move()
+{
+    jump_fmt->setBackground(Qt::white);
+    jump_cursor->setCharFormat(*jump_fmt);
+    if(jump > 0)
+    {
+        jump_fmt->setBackground(Qt::cyan);
+        jump_cursor->setPosition((jump - 1) * 5, QTextCursor::MoveAnchor);
+        jump_cursor->setPosition((jump - 1) * 5 + 4, QTextCursor::KeepAnchor);
+        jump_cursor->setCharFormat(*jump_fmt);
+    }
+    else
+    {
+        jump_fmt->setBackground(Qt::lightGray);
+        jump_cursor->setPosition(0, QTextCursor::MoveAnchor);
+        jump_cursor->setPosition(4, QTextCursor::KeepAnchor);
+        jump_cursor->setCharFormat(*jump_fmt);
+    }
+}
+
+void MainWindow::on_previous_clicked()
+{
+    if(!st_arr.empty() && jump > 0 && jump <= st_arr.size())
+    {
+        st_g = st_arr[--jump];
+        set_board();
+        draw_board();
+        highlight_move();
+    }
+}
+
+
+void MainWindow::on_next_clicked()
+{
+    if(!st_arr.empty() && jump < st_arr.size() - 1)
+    {
+        st_g = st_arr[++jump];
+        set_board();
+        draw_board();
+        highlight_move();
+    }
+}
+
+
+void MainWindow::on_first_clicked()
+{
+    if(!st_arr.empty())
+    {
+        st_g = st_arr[0];
+        set_board();
+        draw_board();
+        jump = 0;
+        highlight_move();
+    }
+}
+
+
+void MainWindow::on_last_clicked()
+{
+    if(!st_arr.empty() && jump < st_arr.size())
+    {
+        jump = st_arr.size();
+        st_g = st_arr[--jump];
+        set_board();
+        draw_board();
+        highlight_move();
+    }
 }
 
