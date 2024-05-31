@@ -6,7 +6,7 @@
 int white_pieces_value;
 int black_pieces_value;
 int value_diff;
-int advantage;
+int aom;
 long count;
 
 bool ans;

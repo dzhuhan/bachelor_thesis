@@ -7,9 +7,17 @@
 #include <iostream>
 #include <sstream>
 
+class MainWindow;
+
 class Solver
 {
 public:
+    static bool prime;
+    static double step;
+    static double progress_steps;
+    static MainWindow *mw;
+    static void get_ui(MainWindow *ui);
+    static void get_progress_rate(state st, bool s);
     static void update_state(state &st, const int move);
     static void get_moves(state &st, std::vector<int> &moves, const int r0, const int c0);
 

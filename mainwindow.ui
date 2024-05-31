@@ -33,14 +33,14 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>430</y>
-      <width>86</width>
-      <height>41</height>
+      <x>600</x>
+      <y>450</y>
+      <width>56</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 700 14pt &quot;Constantia&quot;;</string>
+     <string notr="true">font: 700 11pt &quot;Constantia&quot;;</string>
     </property>
     <property name="text">
      <string>reset</string>
@@ -52,7 +52,7 @@
       <x>480</x>
       <y>55</y>
       <width>176</width>
-      <height>36</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -106,22 +106,6 @@ QPushButton:pressed {
     </property>
     <property name="value">
      <number>1</number>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>410</y>
-      <width>176</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 700 11pt &quot;Constantia&quot;;</string>
-    </property>
-    <property name="text">
-     <string>edit mode</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboBox">
@@ -179,9 +163,9 @@ QPushButton:pressed {
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>95</y>
+      <y>120</y>
       <width>176</width>
-      <height>286</height>
+      <height>276</height>
      </rect>
     </property>
     <property name="font">
@@ -227,13 +211,13 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>430</y>
-      <width>86</width>
-      <height>41</height>
+      <y>450</y>
+      <width>116</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 700 14pt &quot;Constantia&quot;;</string>
+     <string notr="true">font: 700 11pt &quot;Constantia&quot;;</string>
     </property>
     <property name="text">
      <string>clear</string>
@@ -243,7 +227,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>525</x>
-      <y>385</y>
+      <y>400</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -264,7 +248,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>385</y>
+      <y>400</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -280,12 +264,15 @@ border-radius: 4px;</string>
     <property name="text">
      <string>&gt;</string>
     </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="first">
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>385</y>
+      <y>400</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -306,7 +293,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>615</x>
-      <y>385</y>
+      <y>400</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -321,6 +308,47 @@ border-radius: 4px;</string>
     </property>
     <property name="text">
      <string>&gt;&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="edit">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>425</y>
+      <width>176</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 700 11pt &quot;Constantia&quot;;</string>
+    </property>
+    <property name="text">
+     <string>edit</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progress_bar">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>100</y>
+      <width>176</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="textVisible">
+     <bool>true</bool>
+    </property>
+    <property name="format">
+     <string>%p%</string>
     </property>
    </widget>
   </widget>

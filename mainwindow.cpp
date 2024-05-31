@@ -36,11 +36,14 @@ MainWindow::MainWindow(QWidget *parent)
     processBoard = board;
     ui->label->setPixmap(QPixmap::fromImage(board));
     ui->textEdit->setReadOnly(true);
+    prog = ui->progress_bar;
     
     stat = new QLabel("");
     ui->statusbar->addWidget(stat);
     jump_fmt = new QTextCharFormat();
     jump_cursor = new QTextCursor(ui->textEdit->document());
+    Solver::get_ui(this);
+    
     set_board();
 }
 
@@ -634,8 +637,14 @@ void MainWindow::on_pushButton_2_clicked()
     ans_moves.clear();
     st_arr.clear();
     ui->textEdit->clear();
-
     
+    if(aom > 1 || problem != 0)
+        Solver::get_progress_rate(st_g, side);
+    else
+    {
+        prog->setValue(100);
+        prog->update();
+    }
     auto start = std::chrono::steady_clock::now();
 
     switch(problem)
@@ -704,9 +713,9 @@ void MainWindow::on_spinBox_valueChanged(int arg1)
     aom = arg1;
 }
 
-void MainWindow::on_checkBox_stateChanged(int arg1)
+void MainWindow::on_edit_clicked(bool checked)
 {
-    edit = (bool)arg1;
+    edit = checked;
     if(ew == nullptr)
         ew = new Editwindow(this);
     if(edit)
@@ -804,4 +813,3 @@ void MainWindow::on_last_clicked()
         highlight_move();
     }
 }
-

@@ -1,6 +1,44 @@
 #include "solver.h"
+#include "mainwindow.h"
 #include <algorithm>
 #include <vector>
+
+bool Solver::prime;
+double Solver::step;
+double Solver::progress_steps;
+MainWindow *Solver::mw;
+
+void Solver::get_ui(MainWindow *ui)
+{
+    Solver::mw = ui;
+}
+
+void Solver::get_progress_rate(state st, bool s)
+{
+    prime = true;
+    step = 1;
+    progress_steps = 0;
+    state next;
+    if(s == true)
+    {
+        for(auto e: st.white_moves)
+        {
+            next = st;
+            update_state(next, e);
+            progress_steps += next.black_moves.size();
+            std::cout << next.black_moves.size() << " " << progress_steps << " ";
+        }
+    }
+    else
+    {
+        for(auto e: st.black_moves)
+        {
+            next = st;
+            update_state(next, e);
+            progress_steps += next.white_moves.size();
+        }
+    }
+}
 
 void Solver::update_state(state &st, const int move)
 {
@@ -738,6 +776,15 @@ void Solver::find_mate_in(state st, int m, bool s)
     if(m < 1)
         return;
 
+    if(prime && (aom * 2 - 1 - m) == 2)
+    {
+        mw->prog->setValue(step/progress_steps * 100.0);
+        mw->prog->update();
+        std::cout << "stp/pro" << step <<" "<<  progress_steps << std::endl;
+        prime = false;
+        step++;
+    }
+       
     bool s_sort = (m % 2 == 1);
     state next;
 
@@ -761,9 +808,10 @@ void Solver::find_mate_in(state st, int m, bool s)
             if(m == 1 && next.black_moves.empty()
                 && !square_is_safe(next, false, next.black_king_pos.first, next.black_king_pos.second))
             {
+                prime = false;
                 ans = true;
                 count++;
-                
+
                 std::vector<int> a;
                 state st_g_copy = st_g;
                 state temp = st_g;
@@ -855,6 +903,7 @@ void Solver::find_mate_in(state st, int m, bool s)
                     st_g = next;
                     return;
                 }
+                prime = true;
             }
             ans_moves.pop_back();
         }
@@ -879,6 +928,7 @@ void Solver::find_mate_in(state st, int m, bool s)
             if(m == 1 && next.white_moves.empty()
                 && !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
             {
+                prime = false;
                 ans = true;
                 count++;
                 
@@ -973,10 +1023,13 @@ void Solver::find_mate_in(state st, int m, bool s)
                     st_g = next;
                     return;
                 }
+                prime = true;
             }
             ans_moves.pop_back();
         }
     }
+    if((aom * 2 - 1 - m) == 2)
+        prime = true;
 }
 
 void Solver::helpmate_heuristic(state &st)
@@ -1012,6 +1065,14 @@ void Solver::helpmate(state st, int m, bool s)
     if(m < 1)
         return;
 
+    if((aom * 2 - m) == 2)
+    {
+        mw->prog->setValue(step/progress_steps * (double)100);
+        mw->prog->update();
+        std::cout << "stp/pro" << step <<" "<<  progress_steps << std::endl; 
+        step++;
+    }
+    
     state next;
 
     if(s == true)
@@ -1101,7 +1162,15 @@ void Solver::selfmate(state st, int m, bool s)
 {
     if(m < 1)
         return;
-
+        
+    if(prime && (aom * 2 - m) == 2)
+    {
+        mw->prog->setValue(step/progress_steps * (double)100);
+        mw->prog->update();
+        std::cout << "stp/pro" << step <<" "<<  progress_steps << std::endl;
+        step++;
+    }
+    
     state next;
 
     if(s == true)
@@ -1170,6 +1239,7 @@ void Solver::selfmate(state st, int m, bool s)
         }
         if(ans)
         {
+            prime = false;
             count++;
             ans_moves.push_back(st.black_moves[0]);
             
@@ -1265,6 +1335,7 @@ void Solver::selfmate(state st, int m, bool s)
                 st_g = next;
                 return;
             }
+            prime = true;
             ans_moves.pop_back();
         }
     }

@@ -5,6 +5,7 @@
 #include <chrono>
 #include <ctype.h>
 #include "QTextCharFormat"
+#include "QProgressBar"
 #include "QMainWindow"
 #include "QMouseEvent"
 #include "QPainter"
@@ -43,7 +44,6 @@ public:
 
     int row;
     int col;
-    int aom;
     int problem;
 
     bool turn;
@@ -53,6 +53,8 @@ public:
     
     int jump;
     std::vector<state> st_arr;
+    QLabel *stat;
+    QProgressBar *prog;
 
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -72,9 +74,9 @@ private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void on_spinBox_valueChanged(int arg1);
-    void on_checkBox_stateChanged(int arg1);
     void on_comboBox_currentIndexChanged(int index);
     void on_comboBox_2_activated(int index);
+    void on_edit_clicked(bool checked);
     void on_Clear_clicked();
     void on_previous_clicked();
     void on_next_clicked();
@@ -84,7 +86,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Editwindow *ew;
-    QLabel *stat;
     QTextCharFormat *jump_fmt;
     QTextCursor *jump_cursor;
 };

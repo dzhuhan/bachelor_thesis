@@ -12,7 +12,7 @@ extern long count;
 extern int white_pieces_value;
 extern int black_pieces_value;
 extern int value_diff;
-extern int advantage;
+extern int aom;
 
 extern const int init[8][8];
 
