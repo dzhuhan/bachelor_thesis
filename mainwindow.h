@@ -83,6 +83,10 @@ private slots:
     void on_first_clicked();
     void on_last_clicked();
     
+    void on_actionwhitie_triggered();
+    
+    void on_actionblack_triggered();
+    
 private:
     Ui::MainWindow *ui;
     Editwindow *ew;

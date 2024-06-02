@@ -16,5 +16,6 @@
         <file>graphics/splash.jpg</file>
         <file>icons/open.png</file>
         <file>icons/themes.png</file>
+        <file>graphics/board_black.png</file>
     </qresource>
 </RCC>

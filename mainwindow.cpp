@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setFixedSize(QSize(663, 518));
+    this->setFixedSize(QSize(663, 515));
 
     board.load(":/graphics/board.png");
 
@@ -813,3 +813,49 @@ void MainWindow::on_last_clicked()
         highlight_move();
     }
 }
+void MainWindow::on_actionwhitie_triggered()
+{
+    board.load(":/graphics/board.png");
+    draw_board();
+    
+    setStyleSheet("color: black;"
+                        "font: 10pt 'Constantia';");
+                        
+    menuBar()->setStyleSheet("color: black;");
+    
+    ui->textEdit->setStyleSheet(
+        "font: 800 15pt 'Nimbus Mono PS';"
+        "background-color: #ffffff;"
+        "border: 1px solid grey;"
+        "border-radius: 2px;");
+    
+    statusBar()->setStyleSheet("color: black;");
+}
+
+
+void MainWindow::on_actionblack_triggered()
+{
+    board.load(":/graphics/board_black.png");
+    draw_board();
+        
+    setStyleSheet(
+        "color: white;"
+        "background-color: #101010;"
+        "font: 10pt 'Constantia';");
+    
+    menuBar()->setStyleSheet(
+        "color: white;"
+        "background-color: #0c0c0c;");
+        
+    ui->textEdit->setStyleSheet(
+        "color: black;"
+        "font: 800 15pt 'Nimbus Mono PS';"
+        "background-color: #ffffff;"
+        "border: 1px solid black;"
+        "border-radius: 2px;");
+        
+    statusBar()->setStyleSheet(
+        "color: white;"
+        "background-color: #0c0c0c;");
+}
+

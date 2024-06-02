@@ -7,14 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>663</width>
-    <height>518</height>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>chess_solver_v0.0</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">font: 10pt &quot;Constantia&quot;;</string>
+   <string notr="true">font: 10pt &quot;Constantia&quot;;
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
@@ -34,7 +35,7 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>450</y>
+      <y>445</y>
       <width>56</width>
       <height>21</height>
      </rect>
@@ -165,7 +166,7 @@ QPushButton:pressed {
       <x>480</x>
       <y>120</y>
       <width>176</width>
-      <height>276</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="font">
@@ -180,7 +181,7 @@ QPushButton:pressed {
      <string notr="true">font: 800 15pt &quot;Nimbus Mono PS&quot;;
 background-color: rgb(255, 255, 255);
 border: 1px solid grey;
-border-radius: 4px;</string>
+border-radius: 2px;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -211,7 +212,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>450</y>
+      <y>445</y>
       <width>116</width>
       <height>21</height>
      </rect>
@@ -227,7 +228,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>525</x>
-      <y>400</y>
+      <y>395</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -248,7 +249,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>400</y>
+      <y>395</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -272,7 +273,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>400</y>
+      <y>395</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -293,7 +294,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>615</x>
-      <y>400</y>
+      <y>395</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -314,7 +315,7 @@ border-radius: 4px;</string>
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>425</y>
+      <y>420</y>
       <width>176</width>
       <height>21</height>
      </rect>
@@ -371,7 +372,18 @@ border-radius: 4px;</string>
     <property name="title">
      <string>options</string>
     </property>
-    <addaction name="actiontheme_2"/>
+    <widget class="QMenu" name="menutheme">
+     <property name="title">
+      <string>theme</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resources.qrc">
+       <normaloff>:/icons/themes.png</normaloff>:/icons/themes.png</iconset>
+     </property>
+     <addaction name="actionwhitie"/>
+     <addaction name="actionblack"/>
+    </widget>
+    <addaction name="menutheme"/>
    </widget>
    <addaction name="menuopen"/>
    <addaction name="menuoptions"/>
@@ -381,15 +393,6 @@ border-radius: 4px;</string>
     <string notr="true">background-color: rgb(246, 245, 244);</string>
    </property>
   </widget>
-  <action name="actiontheme_2">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/icons/themes.png</normaloff>:/icons/themes.png</iconset>
-   </property>
-   <property name="text">
-    <string>theme</string>
-   </property>
-  </action>
   <action name="actionopen">
    <property name="icon">
     <iconset resource="resources.qrc">
@@ -397,6 +400,25 @@ border-radius: 4px;</string>
    </property>
    <property name="text">
     <string>open</string>
+   </property>
+  </action>
+  <action name="actionwhitie">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>white</string>
+   </property>
+  </action>
+  <action name="actionblack">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>black</string>
    </property>
   </action>
  </widget>
