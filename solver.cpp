@@ -715,18 +715,6 @@ bool Solver::square_is_safe(state &st, bool s, const int r0, const int c0)
     return true;
 }
 
-int Solver::get_value(int v)
-{
-    int m;
-    v > 0 ? m = 1 : m = -1;
-
-    if(abs(v) == 2 || abs(v) == 4)
-        v += m;
-    if(abs(v) == 5)
-        v += 4 * m;
-    return v;
-}
-
 void Solver::sort_by_check(bool s, state st, std::vector<int> &m)
 {
     int count = 0;
@@ -1078,10 +1066,6 @@ void Solver::helpmate(state st, int m, bool s)
     if(s == true)
     {
         s = false;
-        // if(s_sort)
-        // {
-        //     sort_by_check(false, st, st.black_moves);
-        // }
         for(auto e: st.white_moves)
         {
             ans_moves.push_back(e);
@@ -1205,10 +1189,6 @@ void Solver::selfmate(state st, int m, bool s)
     else
     {
         s = true;
-        // if(s_sort)
-        // {
-        //     sort_by_check(false, st, st.black_moves);
-        // }
         for(auto e: st.black_moves)
         {
             ans = false;
@@ -1223,14 +1203,12 @@ void Solver::selfmate(state st, int m, bool s)
             if(m == 1 && next.white_moves.empty() && 
                 !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
             {
-                //std::cout << "qwerqwerqwerqwer" << std::endl;
                 ans = true;
                 ans_moves.pop_back();
             }
             else if(m == 1)
             {
                 ans = false;
-                //std::cout << "fghjfghjfghjfghjfghj" << std::endl;
                 ans_moves.pop_back();
                 return;
             }
@@ -1308,7 +1286,7 @@ void Solver::selfmate(state st, int m, bool s)
                                     ans_moves = a;
                                     break;
                                 }
-                            }//asdf
+                            }
                             ans = true;
                             ans_moves = a;
                         }
@@ -1331,7 +1309,6 @@ void Solver::selfmate(state st, int m, bool s)
             }
             if(ans)
             {
-                // std::cout << "sadfasdfasdf";
                 st_g = next;
                 return;
             }

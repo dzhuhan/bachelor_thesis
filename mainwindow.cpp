@@ -332,8 +332,6 @@ void MainWindow::on_actionopen_triggered()
                     in >> temp;
                     std::cout << temp;
                 }
-                // if(temp == '/' || temp == ' ')
-                //     break;
                 if(a != 0)
                 {
                     st_g.b[r][c] = 0;
