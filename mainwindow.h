@@ -46,7 +46,6 @@ public:
     int col;
     int problem;
 
-    bool turn;
     bool side;
     bool select;
     bool edit;
@@ -64,7 +63,6 @@ public:
     void clear_board();
     void draw_board();
     void highlight_move();
-    bool is_turn(const int r0, const int c0);
     QImage* which_piece(int a);
 
 

@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     pb.load(":/graphics/pawnB.png");
 
     aom = 1;
-    turn = true;
     side = true;
     edit = false;
     select = false;
@@ -203,21 +202,6 @@ void MainWindow::draw_board()
     ui->label->setPixmap(QPixmap::fromImage(processBoard));
 }
 
-bool MainWindow::is_turn(const int r0, const int c0)
-{
-    if(turn && st_g.b[r0][c0] > 0)
-    {
-        turn = !turn;
-        return true;
-    }
-    else if(!turn && st_g.b[r0][c0] < 0)
-    {
-        turn = !turn;
-        return true;
-    }
-    return false;
-}
-
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     int c;
@@ -273,8 +257,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
     else if(c >= 0 && c < 8 && r >= 0 && r < 8)
     {
         if(st_g.b[row][col] != 0
-            && (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c)
-            && is_turn(row, col))))
+            && (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c))))
         {
             if(row == r && col == c)
             {
@@ -621,7 +604,6 @@ void MainWindow::on_actionopen_triggered()
 
 void MainWindow::on_pushButton_clicked()
 {
-    turn = true;
     select = false;
     ans = false;
     init_board();
