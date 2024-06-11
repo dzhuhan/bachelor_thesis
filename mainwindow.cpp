@@ -10,20 +10,19 @@ MainWindow::MainWindow(QWidget *parent)
     this->setFixedSize(QSize(663, 515));
 
     board.load(":/graphics/board.png");
-
     kw.load(":/graphics/kingW.png");
     qw.load(":/graphics/queenW.png");
     rw.load(":/graphics/rookW.png");
     bw.load(":/graphics/bishopW.png");
     nw.load(":/graphics/knightW.png");
     pw.load(":/graphics/pawnW.png");
-
     kb.load(":/graphics/kingB.png");
     qb.load(":/graphics/queenB.png");
     rb.load(":/graphics/rookB.png");
     bb.load(":/graphics/bishopB.png");
     nb.load(":/graphics/knightB.png");
     pb.load(":/graphics/pawnB.png");
+    sl.load(":/graphics/select.png");
 
     aom = 1;
     side = true;
@@ -252,18 +251,24 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             select = false;
         }
         else if(st_g.b[r][c] != 0)
+        {
             select = true;
+            QPainter painter(&processBoard);
+            painter.drawImage(c * 50 + 36, r * 50 + 36, sl);
+            ui->label->setPixmap(QPixmap::fromImage(processBoard));
+        }
     }
     else if(c >= 0 && c < 8 && r >= 0 && r < 8)
     {
-        if(st_g.b[row][col] != 0
+        if(row == r && col == c)
+        {
+            select = false;
+            draw_board();
+            return;
+        }
+        else if(st_g.b[row][col] != 0
             && (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c))))
         {
-            if(row == r && col == c)
-            {
-                select = false;
-                return;
-            }
             if(st_g.b[row][col] > 0 && st_g.b[r][c] > 0)
                 st_g.white_pieces.erase(std::remove(st_g.white_pieces.begin(), st_g.white_pieces.end(), std::make_pair(r, c)));
             else if(st_g.b[row][col] < 0 && st_g.b[r][c] < 0)
@@ -283,6 +288,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         }
         else
         {
+            select = false;
+            draw_board();
             row = r;
             col = c;
         }

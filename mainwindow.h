@@ -41,6 +41,7 @@ public:
     QImage bb;
     QImage nb;
     QImage pb;
+    QImage sl;
 
     int row;
     int col;

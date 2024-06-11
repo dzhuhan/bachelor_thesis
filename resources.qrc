@@ -13,9 +13,9 @@
         <file>graphics/queenW.png</file>
         <file>graphics/rookB.png</file>
         <file>graphics/rookW.png</file>
-        <file>graphics/splash.jpg</file>
         <file>icons/open.png</file>
         <file>icons/themes.png</file>
         <file>graphics/board_black.png</file>
+        <file>graphics/select.png</file>
     </qresource>
 </RCC>
