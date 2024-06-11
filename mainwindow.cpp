@@ -757,6 +757,7 @@ void MainWindow::on_previous_clicked()
     if(!st_arr.empty() && jump > 0 && jump <= st_arr.size())
     {
         st_g = st_arr[--jump];
+        select = false;
         set_board();
         draw_board();
         highlight_move();
@@ -769,6 +770,7 @@ void MainWindow::on_next_clicked()
     if(!st_arr.empty() && jump < st_arr.size() - 1)
     {
         st_g = st_arr[++jump];
+        select = false;
         set_board();
         draw_board();
         highlight_move();
@@ -781,6 +783,7 @@ void MainWindow::on_first_clicked()
     if(!st_arr.empty())
     {
         st_g = st_arr[0];
+        select = false;
         set_board();
         draw_board();
         jump = 0;
@@ -795,6 +798,7 @@ void MainWindow::on_last_clicked()
     {
         jump = st_arr.size();
         st_g = st_arr[--jump];
+        select = false;
         set_board();
         draw_board();
         highlight_move();
