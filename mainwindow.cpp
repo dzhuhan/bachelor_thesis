@@ -706,7 +706,10 @@ void MainWindow::on_edit_clicked(bool checked)
     if(ew == nullptr)
         ew = new Editwindow(this);
     if(edit)
+    {
         ew->show();
+        ew->move(this->x() + 491, this->y() + 120);
+    }
     else if(ew != nullptr)
     {
         ew->close();
