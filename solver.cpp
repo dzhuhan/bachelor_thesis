@@ -787,13 +787,10 @@ std::vector<int> Solver::find_mate_in(state st, int m, bool s, bool t)
         
         for(auto e: *p_moves)
         {
-            ans = false;
-                
+            ans = false; 
             next = st;
             update_state(next, e);
-            // std::cout << "DEPTH:" << m << "\n";
-            // std::cout << "IN WHITE MOVES:" << "\n";
-            // print_state(next);
+
             if(m > 1)
                 av = find_mate_in(next, m - 1, s, !t);
             
@@ -818,9 +815,6 @@ std::vector<int> Solver::find_mate_in(state st, int m, bool s, bool t)
                 if(m == 1 && !square_is_safe(next, !s, king_pos->first, king_pos->second))
                 {
                     ans = true;
-                    //alpha = true;
-                    depth = m;
-                    std::cout << "ST_G: \n";
                     print_state(st_g);
                     av.push_back(e);
                     count++;
@@ -829,8 +823,6 @@ std::vector<int> Solver::find_mate_in(state st, int m, bool s, bool t)
                 else if(!square_is_safe(next, !s, king_pos->first, king_pos->second))
                 {
                     ans = true;
-                    //alpha = true;
-                    std::cout << "NEXT:" << "\n";
                     av.push_back(e);
                     print_state(next);
                     return av;
@@ -853,9 +845,6 @@ std::vector<int> Solver::find_mate_in(state st, int m, bool s, bool t)
                 
             next = st;
             update_state(next, e);
-            // std::cout << "DEPTH:" << m << "\n";
-            // std::cout << "IN BLACK MOVES:" << "\n";
-            // print_state(next);
             if(m > 1)
                 av = find_mate_in(next, m - 1, s, !t);
             
