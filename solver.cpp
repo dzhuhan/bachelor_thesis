@@ -1002,7 +1002,7 @@ std::vector<int> Solver::selfmate(state st, int m, bool s)
 
     if(s == true)
     {
-        //selfmate_heuristic(st);
+        selfmate_heuristic(st);
         
         for(auto e: st.white_moves)
         {
