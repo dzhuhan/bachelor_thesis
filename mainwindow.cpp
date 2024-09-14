@@ -639,7 +639,7 @@ void MainWindow::on_pushButton_2_clicked()
         case 0:
             jump = aom * 2 - 1;
             st_arr.push_back(st_g);
-            Solver::find_mate_in(st_g, (aom * 2 - 1), side);
+            ans_moves = Solver::find_mate_in(st_g, (aom * 2 - 1), side, true);
             break;
 
         case 1:
@@ -665,10 +665,10 @@ void MainWindow::on_pushButton_2_clicked()
         << sec.count() << "s " << ms.count() << "ms" << "        " << "states checked: " << count;
     stat->setText(QString::fromStdString(ss.str()));
     
-    draw_board();
-
     if(ans)
     {
+        std::cout << "SOLUTION FOUND\n";
+        std::reverse(ans_moves.begin(), ans_moves.end());
         ss.str(std::string());
         for (long i = 0; i < ans_moves.size(); i++)
         {
@@ -685,6 +685,9 @@ void MainWindow::on_pushButton_2_clicked()
             else
                 ss << ' ';
         }
+        
+        st_g = st_arr[st_arr.size() - 1];
+        draw_board();
         ui->textEdit->setText(QString::fromStdString(ss.str()));
         highlight_move();
     }

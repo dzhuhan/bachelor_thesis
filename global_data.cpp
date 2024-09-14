@@ -5,7 +5,7 @@
 
 int white_pieces_value;
 int black_pieces_value;
-int value_diff;
+int depth;
 int aom;
 long count;
 

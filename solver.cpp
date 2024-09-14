@@ -1,9 +1,7 @@
 #include "solver.h"
 #include "mainwindow.h"
-#include <algorithm>
-#include <vector>
 
-bool Solver::prime;
+bool Solver::alpha;
 double Solver::step;
 double Solver::progress_steps;
 MainWindow *Solver::mw;
@@ -15,7 +13,7 @@ void Solver::get_ui(MainWindow *ui)
 
 void Solver::get_progress_rate(state st, bool s)
 {
-    prime = true;
+    alpha = true;
     step = 1;
     progress_steps = 0;
     state next;
@@ -759,265 +757,122 @@ void Solver::sort_by_check(bool s, state st, std::vector<int> &m)
 }
 
 
-void Solver::find_mate_in(state st, int m, bool s)
+std::vector<int> Solver::find_mate_in(state st, int m, bool s, bool t)
 {
-    if(m < 1)
-        return;
-
-    if(prime && (aom * 2 - 1 - m) == 2)
+    if((aom * 2 - 1 - m) == 2)
     {
-        mw->prog->setValue(step/progress_steps * 100.0);
+        mw->prog->setValue(step / progress_steps * 100.0);
         mw->prog->update();
         std::cout << "stp/pro" << step <<" "<<  progress_steps << std::endl;
-        prime = false;
+        alpha = false;
         step++;
     }
-       
-    bool s_sort = (m % 2 == 1);
-    state next;
 
-    if(s == true)
+    state next;
+    std::vector<int> av;
+    std::vector<int> temp;
+    std::pair<int, int> *king_pos;
+    std::vector<int> *p_moves;
+    std::vector<int> *o_moves;
+    
+
+    if(t == true)
     {
-        s = false;
-        if(s_sort)
+        if(s)
+            p_moves = &st.white_moves;
+        else
+            p_moves = &st.black_moves;
+            
+        sort_by_check(s, st, *p_moves);
+        
+        for(auto e: *p_moves)
         {
-            sort_by_check(true, st, st.white_moves);
-        }
-        for(auto e: st.white_moves)
-        {
-            ans_moves.push_back(e);
+            ans = false;
+                
             next = st;
             update_state(next, e);
-            find_mate_in(next, m - 1, s);
+            // std::cout << "DEPTH:" << m << "\n";
+            // std::cout << "IN WHITE MOVES:" << "\n";
+            // print_state(next);
+            if(m > 1)
+                av = find_mate_in(next, m - 1, s, !t);
+            
             if(ans)
             {
-                return;
+                av.push_back(e);
+                return av;
             }
-            if(m == 1 && next.black_moves.empty()
-                && !square_is_safe(next, false, next.black_king_pos.first, next.black_king_pos.second))
+            
+            if(s)
             {
-                prime = false;
-                ans = true;
-                count++;
-
-                std::vector<int> a;
-                state st_g_copy = st_g;
-                state temp = st_g;
-                state temp0;
-                
-                if(ans_moves.size() > 1)
-                {
-                    update_state(temp, ans_moves[0]);
-                    std::vector<std::vector<int>>::size_type size = ans_moves.size();
-                    std::cout << "MOVES: " << size << "\n";
-                    for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                    {
-                        std::cout << "move: " << ans_moves[i] << "\n";
-                    }
-                    for(std::vector<std::vector<int>>::size_type i = 2; i < size; i += 2)
-                    {
-                        for(const auto &e: temp.black_moves)
-                        {
-                            std::cout << std::endl << "IN_BLACK_MOVES" << std::endl;
-                            temp0 = temp;
-                            update_state(temp0, e);
-                            for(std::vector<std::vector<int>>::size_type k = 1; k <= size - i; k += 2)
-                            {
-                                ans = false;
-                                a = ans_moves;
-                                st_g = temp0;
-                                
-                                if(e != ans_moves[i-1])
-                                {
-                                    std::cout << "\nE_NOT_IN_ANS_MOVES\n";
-                                    ans_moves.clear();
-                                    find_mate_in(temp0, k, true);
-                                    std::cout << "size - i: " << size - i << "\n";
-                                    std::cout << "ans: " << ans << "\n";
-                                    std::cout << "i: " << i << "\n";
-                                    std::cout << "k: " << k << "\n";
-                                    if(ans)
-                                    {
-                                        std::cout << "\nmate_when_SHOULD_be\n";
-                                        ans_moves = a;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        ans_moves = a;
-                                        continue;
-                                    }
-                                }
-                                else if((k < size - i) && (size - i > 1))
-                                {
-                                    std::cout << "\nE_IN_ANS_MOVES\n";
-                                    ans_moves.clear();
-                                    find_mate_in(temp0, k, true);
-                                    std::cout << "size - i: " << size - i << "\n";
-                                    std::cout << "ans: " << ans << "\n";
-                                    std::cout << "i: " << i << "\n";
-                                    std::cout << "k: " << k << "\n";
-                                    if(ans)
-                                    {
-                                        std::cout << "\nmate_when_SHOULD_NOT_be\n";
-                                        ans = false;
-                                        ans_moves = a;
-                                        break;
-                                    }
-                                }
-                                ans = true;
-                                ans_moves = a;
-                            }
-                            if(!ans)
-                                break;
-                        }
-                        if(!ans)
-                        {
-                            st_g = st_g_copy;
-                            break;
-                        }
-                        std::cout << "\nSTATE_UPDATED_IF_OK\n";
-                        for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                        {
-                            std::cout << "move: " << ans_moves[i] << " :" << i << "\n";
-                        }
-                        update_state(temp, ans_moves[i - 1]);
-                        update_state(temp, ans_moves[i]);
-                    }
-                }
-
-                if(ans)
-                {
-                    st_g = next;
-                    return;
-                }
-                prime = true;
+                o_moves = &next.black_moves;
+                king_pos = &next.black_king_pos;
             }
-            ans_moves.pop_back();
+            else
+            {
+                o_moves = &next.white_moves;
+                king_pos = &next.white_king_pos;
+            }
+            if(o_moves->empty())
+            {
+                if(m == 1 && !square_is_safe(next, !s, king_pos->first, king_pos->second))
+                {
+                    ans = true;
+                    //alpha = true;
+                    depth = m;
+                    std::cout << "ST_G: \n";
+                    print_state(st_g);
+                    av.push_back(e);
+                    count++;
+                    return av;
+                }
+                else if(!square_is_safe(next, !s, king_pos->first, king_pos->second))
+                {
+                    ans = true;
+                    //alpha = true;
+                    std::cout << "NEXT:" << "\n";
+                    av.push_back(e);
+                    print_state(next);
+                    return av;
+                }
+            }
         }
     }
     else
     {
-        s = true;
-        if(s_sort)
+        if(s)
+            o_moves = &st.black_moves;
+        else
+            o_moves = &st.white_moves;
+            
+        for(auto e: *o_moves)
         {
-            sort_by_check(false, st, st.black_moves);
-        }
-        for(auto e: st.black_moves)
-        {
-            ans_moves.push_back(e);
+            ans = false;
+            if(!av.empty())
+                av.pop_back();
+                
             next = st;
             update_state(next, e);
-            find_mate_in(next, m - 1, s);
+            // std::cout << "DEPTH:" << m << "\n";
+            // std::cout << "IN BLACK MOVES:" << "\n";
+            // print_state(next);
+            if(m > 1)
+                av = find_mate_in(next, m - 1, s, !t);
+            
             if(ans)
             {
-                return;
+                av.push_back(e);
+                if(av.size() > temp.size())
+                    temp = av;  
+                continue;
             }
-            if(m == 1 && next.white_moves.empty()
-                && !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
-            {
-                prime = false;
-                ans = true;
-                count++;
-                
-                std::vector<int> a;
-                state st_g_copy = st_g;
-                state temp = st_g;
-                state temp0;
-                
-                if(ans_moves.size() > 1)
-                {
-                    update_state(temp, ans_moves[0]);
-                    std::vector<std::vector<int>>::size_type size = ans_moves.size();
-                    std::cout << "MOVES: " << size << "\n";
-                    for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                    {
-                        std::cout << "move: " << ans_moves[i] << "\n";
-                    }
-                    for(std::vector<std::vector<int>>::size_type i = 2; i < size; i += 2)
-                    {
-                        for(const auto &e: temp.white_moves)
-                        {
-                            std::cout << std::endl << "IN_WHITE_MOVES" << std::endl;
-                            temp0 = temp;
-                            update_state(temp0, e);
-                            for(std::vector<std::vector<int>>::size_type k = 1; k <= size - i; k += 2)
-                            {
-                                ans = false;
-                                a = ans_moves;
-                                st_g = temp0;
-                                
-                                if(e != ans_moves[i-1])
-                                {
-                                    std::cout << "\nE_NOT_IN_ANS_MOVES\n";
-                                    ans_moves.clear();
-                                    find_mate_in(temp0, k, false);
-                                    std::cout << "size - i: " << size - i << "\n";
-                                    std::cout << "ans: " << ans << "\n";
-                                    std::cout << "i: " << i << "\n";
-                                    std::cout << "k: " << k << "\n";
-                                    if(ans)
-                                    {
-                                        std::cout << "\nmate_when_SHOULD_be\n";
-                                        ans_moves = a;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        ans_moves = a;
-                                        continue;
-                                    }
-                                }
-                                else if((k < size - i) && (size - i > 1))
-                                {
-                                    std::cout << "\nE_IN_ANS_MOVES\n";
-                                    ans_moves.clear();
-                                    find_mate_in(temp0, k, false);
-                                    std::cout << "size - i: " << size - i << "\n";
-                                    std::cout << "ans: " << ans << "\n";
-                                    std::cout << "i: " << i << "\n";
-                                    std::cout << "k: " << k << "\n";
-                                    if(ans)
-                                    {
-                                        std::cout << "\nmate_when_SHOULD_NOT_be\n";
-                                        ans = false;
-                                        ans_moves = a;
-                                        break;
-                                    }
-                                }
-                                ans = true;
-                                ans_moves = a;
-                            }
-                            if(!ans)
-                                break;
-                        }
-                        if(!ans)
-                        {
-                            st_g = st_g_copy;
-                            break;
-                        }
-                        std::cout << "\nSTATE_UPDATED_IF_OK\n";
-                        for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                        {
-                            std::cout << "move: " << ans_moves[i] << " :" << i << "\n";
-                        }
-                        update_state(temp, ans_moves[i - 1]);
-                        update_state(temp, ans_moves[i]);
-                    }
-                }
-
-                if(ans)
-                {
-                    st_g = next;
-                    return;
-                }
-                prime = true;
-            }
-            ans_moves.pop_back();
+            else if(!ans)
+                return {};
         }
+        if(temp.size() >= av.size())
+            return temp;
     }
-    if((aom * 2 - 1 - m) == 2)
-        prime = true;
+    return av;
 }
 
 void Solver::helpmate_heuristic(state &st)
@@ -1147,7 +1002,7 @@ void Solver::selfmate(state st, int m, bool s)
     if(m < 1)
         return;
         
-    if(prime && (aom * 2 - m) == 2)
+    if(alpha && (aom * 2 - m) == 2)
     {
         mw->prog->setValue(step/progress_steps * (double)100);
         mw->prog->update();
@@ -1217,7 +1072,7 @@ void Solver::selfmate(state st, int m, bool s)
         }
         if(ans)
         {
-            prime = false;
+            alpha = false;
             count++;
             ans_moves.push_back(st.black_moves[0]);
             
@@ -1312,7 +1167,7 @@ void Solver::selfmate(state st, int m, bool s)
                 st_g = next;
                 return;
             }
-            prime = true;
+            alpha = true;
             ans_moves.pop_back();
         }
     }
