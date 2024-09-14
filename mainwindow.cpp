@@ -651,7 +651,7 @@ void MainWindow::on_pushButton_2_clicked()
         case 2:
             jump = aom * 2;
             st_arr.push_back(st_g);
-            Solver::selfmate(st_g, (aom * 2), side);
+            ans_moves = Solver::selfmate(st_g, (aom * 2), side);
             break;
     }
     

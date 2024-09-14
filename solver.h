@@ -33,7 +33,7 @@ public:
     static void helpmate(state st, const int m, bool s);
     
     static void selfmate_heuristic(state &st);
-    static void selfmate(state st, const int m, bool s);
+    static std::vector<int> selfmate(state st, const int m, bool s);
     static void print_state(state st);
 };
 

@@ -986,11 +986,8 @@ void Solver::selfmate_heuristic(state &st)
         }
     } 
 }
-void Solver::selfmate(state st, int m, bool s)
-{
-    if(m < 1)
-        return;
-        
+std::vector<int> Solver::selfmate(state st, int m, bool s)
+{  
     if(alpha && (aom * 2 - m) == 2)
     {
         mw->prog->setValue(step/progress_steps * (double)100);
@@ -1000,166 +997,57 @@ void Solver::selfmate(state st, int m, bool s)
     }
     
     state next;
+    std::vector<int> av;
+    std::vector<int> temp;
 
     if(s == true)
     {
-        s = false;
-        selfmate_heuristic(st);
+        //selfmate_heuristic(st);
         
         for(auto e: st.white_moves)
         {
-            ans_moves.push_back(e);
+            ans = false;
             next = st;
             update_state(next, e);
-            selfmate(next, m - 1, s);
+            if(m > 1)
+                av = selfmate(next, m - 1, !s);
             if(ans)
             {
-                return;
+                av.push_back(e);
+                return av;
             }
-            if(m == 1 && next.black_moves.empty()
-                && !square_is_safe(next, false, next.black_king_pos.first, next.black_king_pos.second))
-            {
-                ans = true;
-                count++;
-                if(ans)
-                {
-                    st_g = next;
-                    return;
-                }
-            }
-            ans_moves.pop_back();
         }
     }
     else
     {
-        s = true;
         for(auto e: st.black_moves)
         {
+            if(!av.empty())
+                av.pop_back();
+                
             ans = false;
-            ans_moves.push_back(e);
             next = st;
             update_state(next, e);
-            selfmate(next, m - 1, s);
-            if(ans)
-            {
-                return;
-            }
-            if(m == 1 && next.white_moves.empty() && 
-                !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
-            {
-                ans = true;
-                ans_moves.pop_back();
-            }
-            else if(m == 1)
-            {
-                ans = false;
-                ans_moves.pop_back();
-                return;
-            }
             if(m > 1)
-                ans_moves.pop_back();
-        }
-        if(ans)
-        {
-            alpha = false;
-            count++;
-            ans_moves.push_back(st.black_moves[0]);
-            
-            std::vector<int> a;
-            state st_g_copy = st_g;
-            state temp = st_g;
-            state temp0;
-            
-            if(ans_moves.size() > 2)
-            {
-                update_state(temp, ans_moves[0]);
-                std::vector<std::vector<int>>::size_type size = ans_moves.size();
-                std::cout << "MOVES: " << size << "\n";
-                for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                {
-                    std::cout << "move: " << ans_moves[i] << "\n";
-                }
-                for(std::vector<std::vector<int>>::size_type i = 2; i < size; i += 2)
-                {
-                    for(const auto &e: temp.black_moves)
-                    {
-                        std::cout << std::endl << "IN_BLACK_MOVES" << std::endl;
-                        temp0 = temp;
-                        update_state(temp0, e);
-                        for(std::vector<std::vector<int>>::size_type k = 2; k <= size - i; k += 2)
-                        {
-                            ans = false;
-                            a = ans_moves;
-                            st_g = temp0;
-                            
-                            if(e != ans_moves[i-1] && !temp0.white_moves.empty())
-                            {
-                                std::cout << "\nE_NOT_IN_ANS_MOVES\n";
-                                ans_moves.clear();
-                                selfmate(temp0, k, true);
-                                std::cout << "size - i: " << size - i << "\n";
-                                std::cout << "ans: " << ans << "\n";
-                                std::cout << "i: " << i << "\n";
-                                std::cout << "k: " << k << "\n";
-                                if(ans)
-                                {
-                                    std::cout << "\nmate_when_SHOULD_be\n";
-                                    ans_moves = a;
-                                    break;
-                                }
-                                else
-                                {
-                                    ans = false;
-                                    ans_moves = a;
-                                    continue;
-                                }
-                            }
-                            else if((k < size - i) && (size - i > 2))
-                            {
-                                std::cout << "\nE_IN_ANS_MOVES\n";
-                                ans_moves.clear();
-                                selfmate(temp0, k, true);
-                                std::cout << "size - i: " << size - i << "\n";
-                                std::cout << "ans: " << ans << "\n";
-                                std::cout << "i: " << i << "\n";
-                                std::cout << "k: " << k << "\n";
-                                if(ans)
-                                {
-                                    std::cout << "\nmate_when_SHOULD_NOT_be\n";
-                                    ans = false;
-                                    ans_moves = a;
-                                    break;
-                                }
-                            }
-                            ans = true;
-                            ans_moves = a;
-                        }
-                        if(!ans)
-                            break;
-                    }
-                    if(!ans)
-                    {
-                        st_g = st_g_copy;
-                        break;
-                    }
-                    std::cout << "\nSTATE_UPDATED_IF_OK\n";
-                    for(std::vector<std::vector<int>>::size_type i = 0; i < size; i++)
-                    {
-                        std::cout << "move: " << ans_moves[i] << " :" << i << "\n";
-                    }
-                    update_state(temp, ans_moves[i - 1]);
-                    update_state(temp, ans_moves[i]);
-                }
-            }
+                av = selfmate(next, m - 1, !s);
+
+            if(next.white_moves.empty() && !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
+                ans = true;
+                
             if(ans)
             {
-                st_g = next;
-                return;
+                av.push_back(e);
+                if(av.size() > temp.size())
+                    temp = av;  
+                continue;
             }
-            alpha = true;
-            ans_moves.pop_back();
+            else if(!ans)
+                return {};
         }
+        if(temp.size() >= av.size())
+            return temp;
     }
+    return av;
 }
 
 void Solver::print_state(state st)
