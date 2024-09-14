@@ -909,15 +909,14 @@ void Solver::helpmate(state st, int m, bool s)
 
     if(s == true)
     {
-        s = false;
         for(auto e: st.white_moves)
         {
-            ans_moves.push_back(e);
             next = st;
             update_state(next, e);
-            helpmate(next, m - 1, s);
+            helpmate(next, m - 1, !s);
             if(ans)
             {
+                ans_moves.push_back(e);
                 return;
             }
             if(m == 1 && next.black_moves.empty()
@@ -925,42 +924,25 @@ void Solver::helpmate(state st, int m, bool s)
             {
                 ans = true;
                 count++;
-                if(ans)
-                {
-                    st_g = next;
-                    return;
-                }
+                ans_moves.push_back(e);
+                return;
             }
-            ans_moves.pop_back();
         }
     }
     else
     {
-        s = true;
         helpmate_heuristic(st);
         
         for(auto e: st.black_moves)
         {
-            ans_moves.push_back(e);
             next = st;
             update_state(next, e);
-            helpmate(next, m - 1, s);
+            helpmate(next, m - 1, !s);
             if(ans)
             {
+                ans_moves.push_back(e);
                 return;
             }
-            if(m == 1 && next.white_moves.empty() &&
-                !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
-            {
-                ans = true;
-                count++;
-                if(ans)
-                {
-                    st_g = next;
-                    return;
-                }
-            }
-            ans_moves.pop_back();
         }
     }
 }
@@ -1031,8 +1013,12 @@ std::vector<int> Solver::selfmate(state st, int m, bool s)
             if(m > 1)
                 av = selfmate(next, m - 1, !s);
 
-            if(next.white_moves.empty() && !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
+            if(next.white_moves.empty() && 
+                !square_is_safe(next, true, next.white_king_pos.first, next.white_king_pos.second))
+            {
+                count++;
                 ans = true;
+            }
                 
             if(ans)
             {
