@@ -266,8 +266,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             draw_board();
             return;
         }
-        else if(st_g.b[row][col] != 0
-            && (edit || (Solver::legal_move(st_g, row * 1000 + col * 100 + r * 10 + c))))
+        else if(st_g.b[row][col] != 0)
         {
             if(st_g.b[row][col] > 0 && st_g.b[r][c] > 0)
                 st_g.white_pieces.erase(std::remove(st_g.white_pieces.begin(), st_g.white_pieces.end(), std::make_pair(r, c)));
