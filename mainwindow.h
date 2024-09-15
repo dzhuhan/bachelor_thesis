@@ -13,7 +13,7 @@
 #include "QFile"
 #include "QLabel"
 #include "global_data.h"
-#include "editwindow.h"
+#include "addpiecewindow.h"
 #include "promotionwindow.h"
 
 QT_BEGIN_NAMESPACE
@@ -88,7 +88,7 @@ private slots:
     
 private:
     Ui::MainWindow *ui;
-    Editwindow *ew;
+    AddPieceWindow *ew;
     QTextCharFormat *jump_fmt;
     QTextCursor *jump_cursor;
 };

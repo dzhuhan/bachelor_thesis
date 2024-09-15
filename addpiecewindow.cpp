@@ -1,8 +1,8 @@
-#include "editwindow.h"
+#include "addpiecewindow.h"
 #include "ui_editwindow.h"
 #include <iostream>
 
-Editwindow::Editwindow(QWidget *parent)
+AddPieceWindow::AddPieceWindow(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::EditWindow)
 {
@@ -49,12 +49,12 @@ Editwindow::Editwindow(QWidget *parent)
     ui->label->setPixmap(*pixmap);
 }
 
-Editwindow::~Editwindow()
+AddPieceWindow::~AddPieceWindow()
 {
     delete ui;
 }
 
-void Editwindow::mousePressEvent(QMouseEvent *e)
+void AddPieceWindow::mousePressEvent(QMouseEvent *e)
 {
     int x;
     int y;

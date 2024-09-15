@@ -324,7 +324,7 @@ border-radius: 2px;</string>
      <string notr="true">font: 700 11pt &quot;Constantia&quot;;</string>
     </property>
     <property name="text">
-     <string>edit</string>
+     <string>add piece</string>
     </property>
     <property name="checkable">
      <bool>true</bool>

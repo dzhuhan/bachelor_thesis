@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Edit</string>
+   <string>Add piece</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">

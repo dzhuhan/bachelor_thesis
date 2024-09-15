@@ -1,5 +1,5 @@
-#ifndef EDITWINDOW_H
-#define EDITWINDOW_H
+#ifndef ADDPIECEWINDOW_H
+#define ADDPIECEWINDOW_H
 
 #include <QDialog>
 #include <QPainter>
@@ -9,13 +9,13 @@ namespace Ui {
 class EditWindow;
 }
 
-class Editwindow : public QDialog
+class AddPieceWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Editwindow(QWidget *parent = nullptr);
-    ~Editwindow();
+    explicit AddPieceWindow(QWidget *parent = nullptr);
+    ~AddPieceWindow();
     void mousePressEvent(QMouseEvent *event);
     
     int piece;
@@ -37,4 +37,4 @@ private:
     Ui::EditWindow *ui;
 };
 
-#endif // EDITWINDOW_H
+#endif // ADDPIECEWINDOW_H

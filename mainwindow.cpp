@@ -707,7 +707,7 @@ void MainWindow::on_edit_clicked(bool checked)
 {
     edit = checked;
     if(ew == nullptr)
-        ew = new Editwindow(this);
+        ew = new AddPieceWindow(this);
     if(edit)
     {
         ew->show();
